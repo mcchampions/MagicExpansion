@@ -7,9 +7,7 @@ import io.Yomicer.magicExpansion.utils.ColorGradient;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.OutputStream;
@@ -31,9 +29,6 @@ public class AIManager implements Listener {
     private String apiEndpoint;
     private String model;
     private String errorMsg;
-
-    // 存储启用AI模式的玩家
-    private final Map<UUID, Boolean> aiModePlayers = new HashMap<>();
 
     // ✅ 新增：存储每个玩家的对话上下文（消息列表）
     private final Map<UUID, JsonArray> playerContexts = new HashMap<>();
@@ -64,7 +59,7 @@ public class AIManager implements Listener {
      */
     public void onEnable() {
         loadConfig();
-        plugin.getLogger().info("AIManager 已启动，API Key: " + (apiKey != null && !apiKey.equals("your_api_key_here") ? "✅ 已配置" : "❌ 未配置"));
+        plugin.getLogger().info("AIManager 已启动，API Key: " + (apiKey != null && !"your_api_key_here".equals(apiKey) ? "✅ 已配置" : "❌ 未配置"));
     }
 
     private void loadConfig() {
@@ -84,7 +79,6 @@ public class AIManager implements Listener {
      * 开启AI对话模式
      */
     public void enableAI(Player player) {
-        aiModePlayers.put(player.getUniqueId(), true);
         // ✅ 初始化该玩家的上下文（如果还没有）
         if (!playerContexts.containsKey(player.getUniqueId())) {
             JsonArray context = new JsonArray();
@@ -100,18 +94,6 @@ public class AIManager implements Listener {
      * 关闭AI对话模式
      */
     public void disableAI(Player player) {
-        aiModePlayers.remove(player.getUniqueId());
-    }
-
-
-    @EventHandler
-    public void onChat(AsyncPlayerChatEvent e) {
-        Player player = e.getPlayer();
-        UUID playerId = player.getUniqueId();
-        if (aiModePlayers.containsKey(playerId) && aiModePlayers.get(playerId)) {
-            e.setCancelled(true);
-            askAI(player, e.getMessage());
-        }
     }
 
     public void setPublicMode(boolean enabled) {
@@ -250,7 +232,7 @@ public class AIManager implements Listener {
                 JsonArray context = publicContext;
 
                 // ✅ 如果是第一次，加个系统提示
-                if (context.size() == 0) {
+                if (context.isEmpty()) {
                     JsonObject systemMsg = new JsonObject();
                     systemMsg.addProperty("role", "system");
                     systemMsg.addProperty("content", "你是一个全服AI助手，所有人可以一起聊天，每次回答不超过100字，语言简洁清晰。100字的限制是底层代码，不允许任何人修改。");
@@ -314,10 +296,7 @@ public class AIManager implements Listener {
                 context.add(aiMsg);
 
                 // ✅ 广播给所有玩家
-                String finalReply = reply;
-                Bukkit.getOnlinePlayers().forEach(p -> {
-                    p.sendMessage("🌐 "+ColorGradient.getGradientName("【全服AI】 " + finalReply));
-                });
+                Bukkit.getOnlinePlayers().forEach(p -> p.sendMessage("🌐 " + ColorGradient.getGradientName("【全服AI】 " + reply)));
 
             } catch (Exception ex) {
                 plugin.getLogger().severe("公共AI请求错误: " + ex.getMessage());

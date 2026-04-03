@@ -3,7 +3,6 @@ package io.Yomicer.magicExpansion.items.misc;
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.Yomicer.magicExpansion.MagicExpansion;
-import io.Yomicer.magicExpansion.utils.ColorGradient;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -30,13 +29,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-
-import static io.Yomicer.magicExpansion.utils.Utils.doGlow;
 
 public class SfCargoFragmentDistributor extends SlimefunItem implements EnergyNetComponent {
 
@@ -81,10 +77,10 @@ public class SfCargoFragmentDistributor extends SlimefunItem implements EnergyNe
      * 机器状态类
      */
     private static class MachineState {
-        int tickCount = 0;
+        int tickCount;
         String targetPlayerName = "";
-        boolean hasValidFragment = false;
-        boolean isActive = false;
+        boolean hasValidFragment;
+        boolean isActive;
         int currentCheckInterval = SLOW_CHECK_INTERVAL;
 
         void updateState(boolean hasFragment, boolean playerValid) {
@@ -412,8 +408,8 @@ public class SfCargoFragmentDistributor extends SlimefunItem implements EnergyNe
             if (!needsUpdate && meta.hasLore()) {
                 List<String> lore = meta.getLore();
                 boolean hasPlayerSet = expectedPlayerName != null;
-                boolean loreMatches = lore.size() >= 1 &&
-                        lore.get(0).equals(hasPlayerSet ? "§7已设置目标玩家" : "§7当前未设置玩家");
+                boolean loreMatches = !lore.isEmpty() &&
+                                      lore.get(0).equals(hasPlayerSet ? "§7已设置目标玩家" : "§7当前未设置玩家");
 
                 if (!loreMatches) {
                     needsUpdate = true;
@@ -556,11 +552,7 @@ public class SfCargoFragmentDistributor extends SlimefunItem implements EnergyNe
 
             @Override
             public int[] getSlotsAccessedByItemTransport(ItemTransportFlow itemTransportFlow) {
-                if (itemTransportFlow == ItemTransportFlow.INSERT) {
-                    return new int[]{inputSlot};
-                } else {
-                    return new int[]{inputSlot};
-                }
+                return new int[]{inputSlot};
             }
         };
     }

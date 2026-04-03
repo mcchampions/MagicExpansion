@@ -1,7 +1,6 @@
 package io.Yomicer.magicExpansion.Listener.bossListener;
 
 import io.Yomicer.magicExpansion.core.MagicExpansionItems;
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;

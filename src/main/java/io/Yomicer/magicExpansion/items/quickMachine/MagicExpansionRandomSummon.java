@@ -7,9 +7,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.NotPlaceable;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
-import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -20,7 +18,6 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.Yomicer.magicExpansion.utils.ColorGradient.getGradientName;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
 
 public class MagicExpansionRandomSummon extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
@@ -94,7 +91,7 @@ public class MagicExpansionRandomSummon extends SimpleSlimefunItem<ItemUseHandle
         StringBuilder stringBuilder = new StringBuilder();
 
         // 如果文本为空或长度不足，补全空格
-        if (text.length() == 0) {
+        if (text.isEmpty()) {
             text += " ";
         }
         if (text.length() == 1) {

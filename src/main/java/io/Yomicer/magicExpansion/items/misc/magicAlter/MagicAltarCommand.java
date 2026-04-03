@@ -22,19 +22,17 @@ public class MagicAltarCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§c只有玩家可以使用此命令!");
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length == 0) {
             player.sendMessage("§6/mxwand wand §7- 获取魔法祭坛法杖");
             return true;
         }
 
-        if (args[0].equalsIgnoreCase("wand") && player.hasPermission("mxwand.wand")) {
+        if ("wand".equalsIgnoreCase(args[0]) && player.hasPermission("mxwand.wand")) {
             player.getInventory().addItem(createAltarWand());
             player.sendMessage("§a已获得魔法祭坛法杖!");
             return true;

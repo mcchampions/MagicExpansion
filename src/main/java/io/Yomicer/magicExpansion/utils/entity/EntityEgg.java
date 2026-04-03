@@ -1,6 +1,5 @@
 package io.Yomicer.magicExpansion.utils.entity;
 
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 

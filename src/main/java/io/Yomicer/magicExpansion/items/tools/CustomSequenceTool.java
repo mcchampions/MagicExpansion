@@ -20,11 +20,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
@@ -153,7 +151,7 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
             String displayMessage = slotData.message.length() > maxLength ?
                     slotData.message.substring(0, maxLength) + "..." : slotData.message;
 
-            if (slotData.message.startsWith("/")) {
+            if (!slotData.message.isEmpty() && slotData.message.charAt(0) == '/') {
                 lore.add("§d指令: " + displayMessage);
             } else {
                 lore.add("§d消息: " + displayMessage);
@@ -400,7 +398,7 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
         }
 
         // 如果消息以"/"开头，说明是指令，我们不处理（由指令预处理器处理）
-        if (event.getMessage().startsWith("/")) {
+        if (!event.getMessage().isEmpty() && event.getMessage().charAt(0) == '/') {
             return;
         }
 
@@ -410,7 +408,7 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
         InputRequest request = waitingForInput.get(playerId);
 
         // 处理取消
-        if (message.equalsIgnoreCase("cancel")) {
+        if ("cancel".equalsIgnoreCase(message)) {
             waitingForInput.remove(playerId);
             player.sendMessage("§c已取消设置。");
             player.playSound(player.getLocation(), Sound.ENTITY_VILLAGER_NO, 1.0f, 1.0f);
@@ -477,9 +475,9 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
         private final Player player;
         private final ItemStack toolItem;
         private final PlayerSequenceData playerData;
-        private int currentStep = 0;
-        private int delayTicks = 0;
-        private boolean isRunningStep = false;
+        private int currentStep;
+        private int delayTicks;
+        private boolean isRunningStep;
         private final List<Integer> activeSteps = new ArrayList<>();
 
         public SequenceTask(Player player, ItemStack toolItem, PlayerSequenceData playerData) {
@@ -543,7 +541,7 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
             }
 
             SlimefunItem sfItem = SlimefunItem.getByItem(item);
-            return sfItem != null && sfItem instanceof CustomSequenceTool;
+            return sfItem instanceof CustomSequenceTool;
         }
 
         private void executeStep(int step) {
@@ -574,7 +572,7 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
 
                 // 执行消息/指令
                 if (slotData.message != null && !slotData.message.isEmpty()) {
-                    if (slotData.message.startsWith("/")) {
+                    if (!slotData.message.isEmpty() && slotData.message.charAt(0) == '/') {
                         // 执行指令
                         player.performCommand(slotData.message.substring(1));
                     } else {
@@ -631,7 +629,7 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
         }
 
         SlimefunItem sfItem = SlimefunItem.getByItem(item);
-        return sfItem != null && sfItem instanceof VoidTouchScript;
+        return sfItem instanceof VoidTouchScript;
     }
 
     private Location getVoidTouchLocation(ItemStack voidTouchItem) {
@@ -828,7 +826,7 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
         public Location leftClickLocation;
         public Location rightClickLocation;
         public Location teleportLocation;
-        public double interval = 0;
+        public double interval;
         public String message = "";
 
         public boolean hasAnyAction() {
@@ -844,7 +842,7 @@ public class CustomSequenceTool extends SimpleSlimefunItem<ItemUseHandler> imple
         public String leftClickLocation;
         public String rightClickLocation;
         public String teleportLocation;
-        public double interval = 0;
+        public double interval;
         public String message = "";
     }
 

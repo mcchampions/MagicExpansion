@@ -83,30 +83,22 @@ public class SchrodingerFrame extends SimpleSlimefunItem<ItemUseHandler> impleme
         double z = blockLocation.getZ();
         World world = block.getWorld();
 
-        switch (face) {
-            case UP:
-                return new Location(world, x + 0.5, y + 1, z + 0.5);
-            case DOWN:
-                return new Location(world, x + 0.5, y - 0.0625, z + 0.5); // 微微突出下方
-            case NORTH:
-                return new Location(world, x + 0.5, y + 0.5, z - 0.0625); // z-方向突出一点点
-            case SOUTH:
-                return new Location(world, x + 0.5, y + 0.5, z + 1.0625); // z+方向突出
-            case EAST:
-                return new Location(world, x + 1.0625, y + 0.5, z + 0.5);
-            case WEST:
-                return new Location(world, x - 0.0625, y + 0.5, z + 0.5);
-            default:
-                return block.getLocation().add(0.5, 0.5, 0.5);
-        }
+        return switch (face) {
+            case UP -> new Location(world, x + 0.5, y + 1, z + 0.5);
+            case DOWN -> new Location(world, x + 0.5, y - 0.0625, z + 0.5); // 微微突出下方
+            case NORTH -> new Location(world, x + 0.5, y + 0.5, z - 0.0625); // z-方向突出一点点
+            case SOUTH -> new Location(world, x + 0.5, y + 0.5, z + 1.0625); // z+方向突出
+            case EAST -> new Location(world, x + 1.0625, y + 0.5, z + 0.5);
+            case WEST -> new Location(world, x - 0.0625, y + 0.5, z + 0.5);
+            default -> block.getLocation().add(0.5, 0.5, 0.5);
+        };
     }
 
     private boolean hasItemFrameAtLocation(Location location, BlockFace face) {
         Collection<Entity> nearbyEntities = location.getWorld().getNearbyEntities(location, 0.3, 0.3, 0.3);
 
         for (Entity entity : nearbyEntities) {
-            if (entity instanceof ItemFrame) {
-                ItemFrame existingFrame = (ItemFrame) entity;
+            if (entity instanceof ItemFrame existingFrame) {
                 if (isSimilarLocation(existingFrame.getLocation(), location, 0.2) &&
                         existingFrame.getFacing() == face) {
                     return true;

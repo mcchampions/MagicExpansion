@@ -26,7 +26,6 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import static io.Yomicer.magicExpansion.items.summonBossItem.bossSkill.FireZombieSkill.*;
-import static io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils.isItemSimilar;
 
 public class FireZombieMB extends MultiBlockMachine {
 

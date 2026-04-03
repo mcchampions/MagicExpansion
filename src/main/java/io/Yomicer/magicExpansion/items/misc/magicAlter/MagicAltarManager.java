@@ -2,7 +2,6 @@ package io.Yomicer.magicExpansion.items.misc.magicAlter;
 
 import io.Yomicer.magicExpansion.MagicExpansion;
 import io.Yomicer.magicExpansion.utils.log.Debug;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -136,11 +135,7 @@ public class MagicAltarManager {
                     itemFrameLoc.getBlockZ() == frameLoc.getBlockZ()) {
 
                 ItemStack frameItem = itemFrame.getItem();
-                if (frameItem == null || frameItem.getType() == Material.AIR) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return frameItem == null || frameItem.getType() == Material.AIR;
             }
         }
 
@@ -169,8 +164,7 @@ public class MagicAltarManager {
             int[] pos = positions[i];
             Location loc = centerDispenserLoc.clone().add(pos[0], 0, pos[1]);
 
-            if (loc.getBlock().getState() instanceof Dispenser) {
-                Dispenser dispenser = (Dispenser) loc.getBlock().getState();
+            if (loc.getBlock().getState() instanceof Dispenser dispenser) {
 
                 for (int slot = 0; slot < 9; slot++) {
                     ItemStack item = dispenser.getInventory().getItem(slot);
@@ -352,18 +346,18 @@ public class MagicAltarManager {
 
     private Particle.DustOptions getRandomLightningColor() {
         int colorChoice = (int) (Math.random() * 5);
-        switch (colorChoice) {
-            case 0: // 蓝色闪电
-                return new Particle.DustOptions(Color.fromRGB(0, 150, 255), 2.0f);
-            case 1: // 紫色闪电
-                return new Particle.DustOptions(Color.fromRGB(150, 0, 255), 2.0f);
-            case 2: // 青色闪电
-                return new Particle.DustOptions(Color.fromRGB(0, 255, 255), 2.0f);
-            case 3: // 红色闪电
-                return new Particle.DustOptions(Color.fromRGB(255, 50, 50), 2.0f);
-            default: // 白色闪电
-                return new Particle.DustOptions(Color.fromRGB(255, 255, 255), 2.0f);
-        }
+        return switch (colorChoice) {
+            case 0 -> // 蓝色闪电
+                    new Particle.DustOptions(Color.fromRGB(0, 150, 255), 2.0f);
+            case 1 -> // 紫色闪电
+                    new Particle.DustOptions(Color.fromRGB(150, 0, 255), 2.0f);
+            case 2 -> // 青色闪电
+                    new Particle.DustOptions(Color.fromRGB(0, 255, 255), 2.0f);
+            case 3 -> // 红色闪电
+                    new Particle.DustOptions(Color.fromRGB(255, 50, 50), 2.0f);
+            default -> // 白色闪电
+                    new Particle.DustOptions(Color.fromRGB(255, 255, 255), 2.0f);
+        };
     }
 
 
@@ -412,13 +406,13 @@ public class MagicAltarManager {
             for (int slot = 0; slot < 9; slot++) {
                 if (items[i][slot] != null) {
                     hasItems = true;
-                    if (itemList.length() > 0) itemList.append(", ");
+                    if (!itemList.isEmpty()) itemList.append(", ");
                     itemList.append(ItemStackHelper.getDisplayName(items[i][slot])).append("x").append(items[i][slot].getAmount());
                 }
             }
 
             if (hasItems) {
-                player.sendMessage(dispenserNames[i] + ": " + itemList.toString());
+                player.sendMessage(dispenserNames[i] + ": " + itemList);
             } else {
                 player.sendMessage(dispenserNames[i] + ": §7空");
             }
@@ -532,8 +526,7 @@ public class MagicAltarManager {
             // 确保位置正确
             if (loc.getBlock().getType() == Material.DISPENSER) {
                 BlockState state = loc.getBlock().getState();
-                if (state instanceof Dispenser) {
-                    Dispenser dispenser = (Dispenser) state;
+                if (state instanceof Dispenser dispenser) {
 
                     // 保存发射器的朝向
                     org.bukkit.block.data.type.Dispenser dispenserData =
@@ -556,8 +549,7 @@ public class MagicAltarManager {
 
                     // 获取新的发射器状态并设置朝向
                     BlockState newState = loc.getBlock().getState();
-                    if (newState instanceof Dispenser) {
-                        Dispenser newDispenser = (Dispenser) newState;
+                    if (newState instanceof Dispenser newDispenser) {
                         org.bukkit.block.data.type.Dispenser newData =
                                 (org.bukkit.block.data.type.Dispenser) newDispenser.getBlockData();
                         newData.setFacing(facing);

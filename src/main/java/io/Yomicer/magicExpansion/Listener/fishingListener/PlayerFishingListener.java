@@ -8,7 +8,6 @@ import io.Yomicer.magicExpansion.items.misc.fish.FishKeys;
 import io.Yomicer.magicExpansion.items.misc.moreLure.MoreLure;
 import io.Yomicer.magicExpansion.items.tools.FishingRod;
 import io.Yomicer.magicExpansion.utils.ColorGradient;
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
@@ -111,7 +110,7 @@ public class PlayerFishingListener implements Listener {
             consumeLure(player, activeLure);
         }
         ItemStack drop = getSmartLoot(player, fishingRod).clone();
-        Boolean FinalLureEnable = cfg.getBoolean("Fish.FishingRod.FISHING_ROD_FINAL_STICK.Enable.FinalLure_Obtain");
+        boolean FinalLureEnable = cfg.getBoolean("Fish.FishingRod.FISHING_ROD_FINAL_STICK.Enable.FinalLure_Obtain");
         if (!FinalLureEnable) {
             while (drop.isSimilar(new CustomItemStack(new ItemStack(Material.PRISMARINE_SHARD), getGradientNameVer2("鱼饵·记忆碎片"),
                     ("§f这个鱼饵可以钓到任何物品"),

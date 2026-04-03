@@ -9,10 +9,10 @@ import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponen
 import io.github.thebusybiscuit.slimefun4.libraries.dough.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
+import lombok.Getter;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,8 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Getter
 public abstract class AbstractElectricRecipeMachine extends AbstractMachine implements EnergyNetComponent {
 
+    @Getter
     protected List<MachineRecipe> recipes = new ArrayList<>();
 
     private int energyConsumedPerTick = -1;
@@ -59,10 +61,6 @@ public abstract class AbstractElectricRecipeMachine extends AbstractMachine impl
     }
 
 
-    public List<MachineRecipe> getRecipes() {
-        return recipes;
-    }
-
     public final AbstractElectricRecipeMachine setCapacity(int capacity) {
         Preconditions.checkArgument(capacity > 0, "The capacity must be greater then 0");
 
@@ -71,8 +69,8 @@ public abstract class AbstractElectricRecipeMachine extends AbstractMachine impl
     }
 
     public final AbstractElectricRecipeMachine setConsumption(int consumption) {
-        Preconditions.checkArgument(getCapacity() > 0, "Capacity must be set before consumption");
-        Preconditions.checkArgument(consumption < getCapacity() && consumption != 0, "Consuption can not be greater then capacity");
+        Preconditions.checkArgument(energyCapacity > 0, "Capacity must be set before consumption");
+        Preconditions.checkArgument(consumption < energyCapacity && consumption != 0, "Consuption can not be greater then capacity");
         this.energyConsumedPerTick = consumption;
         return this;
     }
@@ -89,7 +87,7 @@ public abstract class AbstractElectricRecipeMachine extends AbstractMachine impl
     }
 
     public void registerRecipe(MachineRecipe recipe) {
-        recipe.setTicks(recipe.getTicks() / getSpeed()); 
+        recipe.setTicks(recipe.getTicks() / processingSpeed);
         recipes.add(recipe); 
     }
 
@@ -122,11 +120,11 @@ public abstract class AbstractElectricRecipeMachine extends AbstractMachine impl
         if (isChargeable()) {
             int charge = getCharge(l); 
 
-             if (charge < getEnergyConsumption()) {
+             if (charge < energyConsumedPerTick) {
                 return false;
              }
 
-             setCharge(l, charge - getEnergyConsumption()); 
+             setCharge(l, charge - energyConsumedPerTick);
         }
         return true; 
     }

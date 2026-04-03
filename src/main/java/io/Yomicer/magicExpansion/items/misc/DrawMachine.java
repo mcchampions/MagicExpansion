@@ -306,8 +306,7 @@ public class DrawMachine extends SlimefunItem implements EnergyNetComponent {
             String itemName = ItemStackHelper.getDisplayName(originalTemplateItem);
 
             // 更新物品显示 - 显示需要的数量
-            if (itemEntity instanceof Item) {
-                Item itemDisplay = (Item) itemEntity;
+            if (itemEntity instanceof Item itemDisplay) {
                 ItemStack displayStack = originalTemplateItem.clone();
                 displayStack.setAmount(Math.min(requiredAmount, displayStack.getMaxStackSize()));
                 itemDisplay.setItemStack(displayStack);
@@ -320,8 +319,7 @@ public class DrawMachine extends SlimefunItem implements EnergyNetComponent {
             if (line3 != null) line3.setCustomName("§d奖池奖品剩余: " + totalRewards + "个");
         } else {
             // 更新物品显示为屏障
-            if (itemEntity instanceof Item) {
-                Item itemDisplay = (Item) itemEntity;
+            if (itemEntity instanceof Item itemDisplay) {
                 itemDisplay.setItemStack(new ItemStack(Material.BARRIER));
             }
 
@@ -808,18 +806,14 @@ public class DrawMachine extends SlimefunItem implements EnergyNetComponent {
                     player.sendMessage(ChatColor.GREEN + "已设置每次抽奖需要物品数量为：" + amount);
 
                     // 重新打开菜单
-                    Bukkit.getScheduler().runTask(Slimefun.instance(), () -> {
-                        menu.open(player);
-                    });
+                    Bukkit.getScheduler().runTask(Slimefun.instance(), () -> menu.open(player));
                 } catch (NumberFormatException e) {
                     player.sendMessage(ChatColor.RED + "请输入有效的整数！已设置为默认值1。");
                     BlockStorage.addBlockInfo(menu.getBlock(), "requiredAmount", "1");
                     updateMenu(menu, menu.getBlock());
 
                     // 重新打开菜单
-                    Bukkit.getScheduler().runTask(Slimefun.instance(), () -> {
-                        menu.open(player);
-                    });
+                    Bukkit.getScheduler().runTask(Slimefun.instance(), () -> menu.open(player));
                 }
             });
         }
@@ -977,9 +971,8 @@ public class DrawMachine extends SlimefunItem implements EnergyNetComponent {
 
         // 由于现在tick是同步的，可以直接调用getNearbyEntities
         for (Entity entity : block.getWorld().getNearbyEntities(center, 5, 5, 5)) {
-            if (!(entity instanceof Item)) continue;
+            if (!(entity instanceof Item item)) continue;
 
-            Item item = (Item) entity;
             if (item.isDead()) continue;
 
             // 跳过悬浮物物品实体
@@ -1038,8 +1031,7 @@ public class DrawMachine extends SlimefunItem implements EnergyNetComponent {
     public static void cleanupAllHolograms() {
         for (World world : Bukkit.getWorlds()) {
             for (Entity entity : world.getEntities()) {
-                if (entity instanceof Item) {
-                    Item item = (Item) entity;
+                if (entity instanceof Item item) {
                     if (item.hasMetadata("draw-machine-hologram")) {
                         item.remove();
                     }

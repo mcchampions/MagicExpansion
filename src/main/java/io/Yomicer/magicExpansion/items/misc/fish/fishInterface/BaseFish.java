@@ -161,8 +161,7 @@ public class BaseFish {
             meta.setDisplayName(originalFish.getDisplayName());
 
             // 合并原有Lore和额外添加的Lore
-            List<String> lore = new ArrayList<>();
-            lore.addAll(Arrays.asList(originalFish.getLoreLines()));
+            List<String> lore = new ArrayList<>(Arrays.asList(originalFish.getLoreLines()));
             if (!additionalLore.isEmpty()) {
                 lore.addAll(additionalLore);
             }

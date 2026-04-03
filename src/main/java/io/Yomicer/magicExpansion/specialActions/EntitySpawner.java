@@ -4,7 +4,6 @@ import io.Yomicer.magicExpansion.utils.ColorGradient;
 import net.guizhanss.guizhanlib.minecraft.helper.entity.EntityHelper;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import java.util.Random;
 import org.bukkit.Location;

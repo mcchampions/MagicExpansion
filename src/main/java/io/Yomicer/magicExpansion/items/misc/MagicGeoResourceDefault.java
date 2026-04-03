@@ -1,7 +1,6 @@
 package io.Yomicer.magicExpansion.items.misc;
 
 import io.Yomicer.magicExpansion.MagicExpansion;
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import io.github.thebusybiscuit.slimefun4.api.geo.GEOResource;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -17,8 +16,8 @@ public class MagicGeoResourceDefault extends UnplaceableBlock implements GEOReso
 
     private String name = "未命名";
     private boolean isObtainableFromGEOMiner = true;
-    private int supply = 0;
-    private int MaxDeviation = 0;
+    private int supply;
+    private int MaxDeviation;
 
     public MagicGeoResourceDefault(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe,
                                    String name, Boolean isObtainableFromGEOMiner, int supply, int MaxDeviation){

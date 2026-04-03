@@ -15,7 +15,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.event.Event;
@@ -52,8 +51,7 @@ public class Scythe extends SimpleSlimefunItem<ItemUseHandler> implements NotPla
                 return;
             }
 
-            if (e.getBlock().getBlockData() instanceof Ageable) {
-                Ageable ageable = (Ageable) e.getBlock().getBlockData();
+            if (e.getBlock().getBlockData() instanceof Ageable ageable) {
 
                 // 只处理完全成熟的作物
                 if (ageable.getAge() == ageable.getMaximumAge()) {

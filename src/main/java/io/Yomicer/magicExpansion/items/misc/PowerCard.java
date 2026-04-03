@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.Yomicer.magicExpansion.utils.ColorGradient.getGradientName;
 import static io.Yomicer.magicExpansion.utils.ColorGradient.getRandomGradientName;
 
 public class PowerCard extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {

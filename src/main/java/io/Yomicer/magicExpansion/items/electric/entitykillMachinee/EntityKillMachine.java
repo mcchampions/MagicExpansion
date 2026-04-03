@@ -12,12 +12,9 @@ import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponen
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
-import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
-import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -26,14 +23,11 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.Comparator;
 
-import static io.Yomicer.magicExpansion.utils.ColorGradient.getGradientName;
 import static io.Yomicer.magicExpansion.utils.Utils.doGlow;
 
 public class EntityKillMachine extends SlimefunItem implements EnergyNetComponent {
@@ -79,7 +73,7 @@ public class EntityKillMachine extends SlimefunItem implements EnergyNetComponen
 
         BlockMenu menu = StorageCacheUtils.getMenu(block.getLocation());
         if(menu != null && menu.hasViewer()) {
-        if (getCharge(block.getLocation()) < getEnergyConsumption()) {
+        if (getCharge(block.getLocation()) < craftPerTick) {
             //电量不足
             menu.addItem(13, new CustomItemStack(new ItemStack (Material.GHAST_TEAR), "§c电量不足"),
                     (p, slot, item, action) -> false);
@@ -88,7 +82,7 @@ public class EntityKillMachine extends SlimefunItem implements EnergyNetComponen
             //电量不足
             menu.addItem(13, new CustomItemStack(new ItemStack(Material.BLUE_BED), "§b抑制中",
                             "§b类型：§e" + name,
-                            "§b耗电速度：§e" + getEnergyConsumption() * 2 + " J/s",
+                            "§b耗电速度：§e" + (getEnergyConsumption() << 1) + " J/s",
                             "§b电量存储：§e" + getCharge(block.getLocation()) + " J"),
                     (p, slot, item, action) -> false);
 

@@ -22,20 +22,16 @@ public class MagicExpansionCommand implements CommandExecutor {
         }
 
         // 解析子命令
-        switch (args[0].toLowerCase()) {
-            case "reload":
-                if (args.length == 2 && args[1].equalsIgnoreCase("slimefun")) {
-                    // 清空缓存并重新加载所有 Slimefun 物品
-                    MagicExpansionSlimefunItemCache.reloadCache();
-                    sender.sendMessage("§a已成功清空缓存并重新加载所有 Slimefun 物品！");
-                } else {
-                    sender.sendMessage("§c用法: /magicexpansion reload slimefun   重载魔法拓展对Slimefun物品的缓存");
-                }
-                break;
-
-            default:
-                sender.sendMessage("§c未知子命令！请输入 /magicexpansion 查看帮助。");
-                break;
+        if (args[0].toLowerCase().equals("reload")) {
+            if (args.length == 2 && "slimefun".equalsIgnoreCase(args[1])) {
+                // 清空缓存并重新加载所有 Slimefun 物品
+                MagicExpansionSlimefunItemCache.reloadCache();
+                sender.sendMessage("§a已成功清空缓存并重新加载所有 Slimefun 物品！");
+            } else {
+                sender.sendMessage("§c用法: /magicexpansion reload slimefun   重载魔法拓展对Slimefun物品的缓存");
+            }
+        } else {
+            sender.sendMessage("§c未知子命令！请输入 /magicexpansion 查看帮助。");
         }
 
         return true;

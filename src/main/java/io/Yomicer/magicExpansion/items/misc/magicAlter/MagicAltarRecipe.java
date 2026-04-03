@@ -1,11 +1,11 @@
 package io.Yomicer.magicExpansion.items.misc.magicAlter;
 
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Arrays;
-
+@Getter
 public class MagicAltarRecipe {
     private final ItemStack[][] dispenserItems;
     private final ItemStack result;
@@ -32,18 +32,6 @@ public class MagicAltarRecipe {
                 {Material.OBSIDIAN, Material.GOLD_BLOCK, Material.GOLD_BLOCK, Material.GOLD_BLOCK, Material.OBSIDIAN},
                 {Material.OBSIDIAN, Material.OBSIDIAN, Material.OBSIDIAN, Material.OBSIDIAN, Material.OBSIDIAN}
         };
-    }
-
-    public ItemStack[][] getDispenserItems() {
-        return dispenserItems;
-    }
-
-    public ItemStack getResult() {
-        return result;
-    }
-
-    public Material[][] getBaseLayout() {
-        return baseLayout;
     }
 
     // 检查配方是否匹配 - 强制方位匹配

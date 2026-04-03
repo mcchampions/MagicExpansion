@@ -12,7 +12,6 @@ import javax.annotation.Nonnull;
 
 import static io.Yomicer.magicExpansion.MagicExpansionItemSetup.magicexpansionpower;
 import static io.Yomicer.magicExpansion.MagicExpansionItemSetup.magicexpansionresourcegenerator;
-import static io.Yomicer.magicExpansion.utils.itemUtils.sfItemUtils.sfItemAmount;
 
 public class MagicExpansionPowerMachineSetup {
 

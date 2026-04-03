@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import static io.Yomicer.magicExpansion.utils.ColorGradient.*;
-import static io.Yomicer.magicExpansion.utils.ColorGradient.getGradientNameVer2;
 import static org.bukkit.inventory.EquipmentSlot.HAND;
 
 public class PreBuildingTree extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {

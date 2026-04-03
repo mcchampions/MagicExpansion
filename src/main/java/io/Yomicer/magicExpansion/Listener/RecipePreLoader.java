@@ -85,9 +85,10 @@ public class RecipePreLoader implements Listener {
 
                 // 合并相同物品
                 boolean merged = false;
-                for (ItemStack key : recipeMap.keySet()) {
+                for (Map.Entry<ItemStack, Integer> entry : recipeMap.entrySet()) {
+                    ItemStack key = entry.getKey();
                     if (isSimilar(key, ingredient)) {
-                        recipeMap.put(key, recipeMap.get(key) + ingredient.getAmount());
+                        recipeMap.put(key, entry.getValue() + ingredient.getAmount());
                         merged = true;
                         break;
                     }

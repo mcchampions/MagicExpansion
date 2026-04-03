@@ -1,8 +1,6 @@
 package io.Yomicer.magicExpansion.specialActions.Command;
 
-import io.Yomicer.magicExpansion.MagicExpansionItemSetup;
 import io.Yomicer.magicExpansion.core.MagicExpansionItems;
-import io.Yomicer.magicExpansion.items.misc.fish.FishingBook;
 import io.Yomicer.magicExpansion.utils.FishingGuideMenu;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -19,12 +17,10 @@ public class FishingGuideCommand implements CommandExecutor, TabCompleter {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         // 检查发送者是否是玩家
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§c只有玩家才能使用这个命令！");
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length == 0) {
             sendUsage(player);

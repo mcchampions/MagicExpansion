@@ -2,7 +2,6 @@ package io.Yomicer.magicExpansion.utils.quickMachine;
 
 import io.Yomicer.magicExpansion.utils.CreateItem;
 import io.Yomicer.magicExpansion.utils.MagicExpansionSlimefunItemCache;
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.collections.Pair;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
@@ -12,16 +11,13 @@ import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
 import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -384,8 +380,7 @@ public class QuickMachineMBUtilsMBVersion {
                     ItemStack[] output = machineRecipe.getOutput(); // 获取输出物品数组
 
                     // 将输入和输出合并为一个完整的配方 Map
-                    Map<String, Integer> recipeMap = new LinkedHashMap<>();
-                    recipeMap.putAll(convertRecipeToMap(input)); // 输入部分
+                    Map<String, Integer> recipeMap = new LinkedHashMap<>(convertRecipeToMap(input)); // 输入部分
 
                     // 检查目标配方是否完全匹配当前配方
                     boolean isMatch = targetRecipe.equals(recipeMap);
@@ -577,7 +572,7 @@ public class QuickMachineMBUtilsMBVersion {
                     resultItemClone.setAmount(totalOutput);
 
                     // 调用 pushItem 方法，尝试将物品放入槽位
-                    ItemStack remainingItems = pushItemRe(resultItemClone, outputSlots,menu);;
+                    ItemStack remainingItems = pushItemRe(resultItemClone, outputSlots,menu);
 
                     // 检查是否有未放置的物品
                     if (remainingItems != null && remainingItems.getAmount() > 0) {
@@ -607,7 +602,7 @@ public class QuickMachineMBUtilsMBVersion {
                     resultItemClone.setAmount(totalOutput);
 
                     // 调用 pushItem 方法，尝试将物品放入槽位
-                    ItemStack remainingItems = pushItemRe(resultItemClone, outputSlots,menu);;
+                    ItemStack remainingItems = pushItemRe(resultItemClone, outputSlots,menu);
 
                     // 检查是否有未放置的物品
                     if (remainingItems != null && remainingItems.getAmount() > 0) {

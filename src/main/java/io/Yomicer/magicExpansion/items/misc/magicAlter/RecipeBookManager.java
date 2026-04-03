@@ -202,7 +202,7 @@ public class RecipeBookManager {
         ItemStack backButton = createHeadButton(
                 "MHF_ArrowLeft",
                 "§c返回配方列表",
-                Arrays.asList("§7点击返回主界面")
+                List.of("§7点击返回主界面")
         );
         // 添加按钮标识
         ItemMeta backMeta = backButton.getItemMeta();
@@ -316,7 +316,7 @@ public class RecipeBookManager {
         ItemStack pinkGlass = createButton(
                 Material.PINK_STAINED_GLASS_PANE,
                 "§e",
-                Arrays.asList(
+                List.of(
                         "§e"
                 )
         );
@@ -338,7 +338,7 @@ public class RecipeBookManager {
         ItemStack backButton = createHeadButton(
                 "MHF_ArrowLeft",
                 "§c返回配方详情",
-                Arrays.asList("§7点击返回配方详情")
+                List.of("§7点击返回配方详情")
         );
         // 添加按钮标识和配方ID
         ItemMeta backMeta = backButton.getItemMeta();
@@ -427,7 +427,7 @@ public class RecipeBookManager {
         ItemStack backButton = createHeadButton(
                 "MHF_ArrowLeft",
                 "§c返回发射器列表",
-                Arrays.asList("§7点击返回发射器列表")
+                List.of("§7点击返回发射器列表")
         );
         // 添加按钮标识和配方ID
         ItemMeta backMeta = backButton.getItemMeta();
@@ -506,7 +506,7 @@ public class RecipeBookManager {
         ItemStack backButton = createHeadButton(
                 "MHF_ArrowLeft",
                 "§c返回配方详情",
-                Arrays.asList("§7点击返回配方详情")
+                List.of("§7点击返回配方详情")
         );
         // 添加按钮标识和配方ID
         ItemMeta backMeta = backButton.getItemMeta();
@@ -646,7 +646,7 @@ public class RecipeBookManager {
 
             // 处理按钮点击
             switch (buttonType) {
-                case "dispenser_list":
+                case "dispenser_list", "back_to_dispenser_list":
                     if (recipeId != null) {
                         openDispenserList(player, recipeId);
                     }
@@ -683,12 +683,6 @@ public class RecipeBookManager {
                         if (recipe != null) {
                             openRecipeDetail(player, recipeId, recipe.getResult());
                         }
-                    }
-                    break;
-
-                case "back_to_dispenser_list":
-                    if (recipeId != null) {
-                        openDispenserList(player, recipeId);
                     }
                     break;
             }

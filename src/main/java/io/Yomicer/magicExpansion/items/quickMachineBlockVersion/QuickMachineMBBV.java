@@ -13,6 +13,7 @@ import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponen
 import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
+import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
@@ -40,8 +41,10 @@ public class QuickMachineMBBV extends SlimefunItem implements EnergyNetComponent
 
 
     private final int[] inputInfo = {};
+    @Getter
     private final int[] inputSlots = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35};
     private final int[] outputInfo = {};
+    @Getter
     private final int[] outputSlots = {35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1};
     private final int[] starslot = {49};
     private final int[] arrowslots = {45,53};
@@ -96,9 +99,7 @@ public class QuickMachineMBBV extends SlimefunItem implements EnergyNetComponent
 
             @Override
             public void newInstance(BlockMenu menu, Block b) {
-                menu.addMenuOpeningHandler((player -> {
-                    addAvailableRecipesToMenu(menu, receivedMBRecipes);
-                }));
+                menu.addMenuOpeningHandler((player -> addAvailableRecipesToMenu(menu, receivedMBRecipes)));
                 // 初始化菜单内容
                 for (int i : starslot) {
                 menu.addItem(i, new CustomItemStack(Material.NETHER_STAR, "§x§F§D§B§7§D§4使用说明",
@@ -247,15 +248,6 @@ public class QuickMachineMBBV extends SlimefunItem implements EnergyNetComponent
             }
         };
     }
-
-    public int[] getInputSlots() {
-        return inputSlots;
-    }
-
-    public int[] getOutputSlots() {
-        return outputSlots;
-    }
-
 
 
     @Override

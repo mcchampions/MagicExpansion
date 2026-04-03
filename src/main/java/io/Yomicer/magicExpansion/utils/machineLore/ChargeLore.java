@@ -18,12 +18,12 @@ public class ChargeLore {
 
     @Nonnull
     public static String energyBuffer(int energy) {
-        return "⇨ ⚡ " + format((double)energy) + " J 可储存";
+        return "⇨ ⚡ " + format(energy) + " J 可储存";
     }
 
     @Nonnull
     public static String energyPerTick(int energy) {
-        return "⇨ ⚡ " + format((double)energy) + " J/tick ";
+        return "⇨ ⚡ " + format(energy) + " J/tick ";
     }
 
     @Nonnull

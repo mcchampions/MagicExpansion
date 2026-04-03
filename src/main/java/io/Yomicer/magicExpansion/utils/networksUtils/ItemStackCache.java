@@ -12,9 +12,9 @@ public class ItemStackCache {
     private @Nullable ItemStack itemStack;
 
     @Nullable
-    private ItemMeta itemMeta = null;
+    private ItemMeta itemMeta;
 
-    private boolean metaCached = false;
+    private boolean metaCached;
 
     public ItemStackCache(@Nullable ItemStack itemStack) {
         this.itemStack = itemStack;

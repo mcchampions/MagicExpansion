@@ -1,7 +1,6 @@
 package io.Yomicer.magicExpansion.items.misc;
 
 import io.Yomicer.magicExpansion.MagicExpansion;
-import io.Yomicer.magicExpansion.utils.FishingGuideMenu;
 import io.Yomicer.magicExpansion.utils.ItemPermissionUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -55,7 +54,7 @@ public class DeathLifeBook extends SimpleSlimefunItem<ItemUseHandler> implements
                 .stream()
                 .filter(entity -> {
                     // 只保留活体生物，排除玩家、盔甲架、物品展示框、掉落物等
-                    if (!(entity instanceof LivingEntity)) return false;
+                    if (!(entity instanceof LivingEntity living)) return false;
                     if (entity instanceof Player) return false;
                     if (entity instanceof ArmorStand) return false;
                     if (entity instanceof ItemFrame) return false;
@@ -70,7 +69,6 @@ public class DeathLifeBook extends SimpleSlimefunItem<ItemUseHandler> implements
                     if (entity instanceof AreaEffectCloud) return false;
 
                     // 确保是有生命的生物
-                    LivingEntity living = (LivingEntity) entity;
                     return living.getHealth() > 0;
                 })
                 .map(entity -> (LivingEntity) entity)

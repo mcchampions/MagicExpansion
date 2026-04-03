@@ -1,11 +1,8 @@
 package io.Yomicer.magicExpansion.Listener.bossListener;
 
-import io.Yomicer.magicExpansion.utils.log.Debug;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.damage.DamageSource;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;

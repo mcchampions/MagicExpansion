@@ -2,7 +2,6 @@ package io.Yomicer.magicExpansion.items.misc.magicAlter;
 
 import io.Yomicer.magicExpansion.MagicExpansion;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
@@ -22,12 +21,10 @@ public class MxEnchantCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§c只有玩家可以使用此命令!");
             return true;
         }
-
-        Player player = (Player) sender;
 
         if (args.length == 0) {
             player.sendMessage("§6/mxalter guide §7- 获取配方书");

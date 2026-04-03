@@ -1,7 +1,6 @@
 package io.Yomicer.magicExpansion.utils;
 
 import io.Yomicer.magicExpansion.core.MagicExpansionItems;
-import io.Yomicer.magicExpansion.items.misc.WeightedItem;
 import io.Yomicer.magicExpansion.items.misc.fish.fishInterface.BaseFish;
 import io.Yomicer.magicExpansion.items.misc.fish.fishInterface.FishManager;
 import io.Yomicer.magicExpansion.utils.CustomHeadUtils.CustomHead;
@@ -12,7 +11,6 @@ import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.entity.AreaEffectCloud;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

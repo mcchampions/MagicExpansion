@@ -18,7 +18,6 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
@@ -36,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -211,7 +209,7 @@ public class FishOutputMachineStack extends MenuBlock implements EnergyNetCompon
         BlockMenu inv = StorageCacheUtils.getMenu(block.getLocation());
 
         if(inv != null && inv.hasViewer()) {
-            if (getCharge(block.getLocation()) < getEnergyConsumption()) {
+            if (getCharge(block.getLocation()) < ENERGY_CONSUMPTION) {
                 inv.addItem(48, new CustomItemStack(doGlow(Material.LANTERN), getGradientName("⚡机器停止运行⚡"),
                                 getGradientName("请检查电力供应是否充足")),
                         (player1, slot, item, action) -> false);
@@ -342,7 +340,7 @@ public class FishOutputMachineStack extends MenuBlock implements EnergyNetCompon
         ItemStack VoidTouchSlotItem = inv.getItemInSlot(VoidTouchSlot);
         if (VoidTouchSlotItem != null && !VoidTouchSlotItem.getType().isAir() && outItems != null){
             SlimefunItem VoidTouchItem = SlimefunItem.getByItem(VoidTouchSlotItem);
-            if (VoidTouchItem != null && VoidTouchItem instanceof VoidTouch) {
+            if (VoidTouchItem instanceof VoidTouch) {
                 ItemMeta VoidTouchMeta = VoidTouchSlotItem.getItemMeta();
                 if (VoidTouchMeta != null) {
                     PersistentDataContainer container = VoidTouchMeta.getPersistentDataContainer();
@@ -365,7 +363,7 @@ public class FishOutputMachineStack extends MenuBlock implements EnergyNetCompon
                             if (sfItem != null) {
                                 if (sfItem instanceof CargoCoreMore) {
                                     if (pushItemToCargoCore(targetLocation, outItems)){
-                                        removeCharge(block.getLocation(), getEnergyConsumption());
+                                        removeCharge(block.getLocation(), ENERGY_CONSUMPTION);
                                     }
                                 }
                             }
@@ -421,13 +419,11 @@ public class FishOutputMachineStack extends MenuBlock implements EnergyNetCompon
                                     return true; // 有该物品且数量>0
                                 }
                             } catch (Exception e) {
-                                continue;
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 
@@ -489,7 +485,6 @@ public class FishOutputMachineStack extends MenuBlock implements EnergyNetCompon
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 

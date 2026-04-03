@@ -4,7 +4,6 @@ import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.Yomicer.magicExpansion.MagicExpansion;
 import io.Yomicer.magicExpansion.items.misc.CargoFragment;
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -71,10 +70,10 @@ public class CargoFragmentDistributor extends SlimefunItem implements EnergyNetC
      * 机器状态类
      */
     private static class MachineState {
-        int tickCount = 0;
+        int tickCount;
         String targetPlayerName = "";
-        boolean hasValidFragment = false;
-        boolean isActive = false;
+        boolean hasValidFragment;
+        boolean isActive;
         int currentCheckInterval = SLOW_CHECK_INTERVAL;
 
         void updateState(boolean hasFragment, boolean playerValid) {
@@ -438,8 +437,8 @@ public class CargoFragmentDistributor extends SlimefunItem implements EnergyNetC
             if (!needsUpdate && meta.hasLore()) {
                 List<String> lore = meta.getLore();
                 boolean hasPlayerSet = expectedPlayerName != null;
-                boolean loreMatches = lore.size() >= 1 &&
-                        lore.get(0).equals(hasPlayerSet ? "§7已设置目标玩家" : "§7当前未设置玩家");
+                boolean loreMatches = !lore.isEmpty() &&
+                                      lore.get(0).equals(hasPlayerSet ? "§7已设置目标玩家" : "§7当前未设置玩家");
 
                 if (!loreMatches) {
                     needsUpdate = true;
@@ -555,7 +554,7 @@ public class CargoFragmentDistributor extends SlimefunItem implements EnergyNetC
             public void onBlockBreak(Block b) {
                 BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
                 if (inv != null) {
-                    inv.dropItems(b.getLocation(), new int[]{inputSlot});
+                    inv.dropItems(b.getLocation(), inputSlot);
                 }
                 // 如果机器数量增加很多，检查缓存大小
                 if (machineStates.size() % 10 == 0) { // 每10台机器检查一次
@@ -582,11 +581,7 @@ public class CargoFragmentDistributor extends SlimefunItem implements EnergyNetC
 
             @Override
             public int[] getSlotsAccessedByItemTransport(ItemTransportFlow itemTransportFlow) {
-                if (itemTransportFlow == ItemTransportFlow.INSERT) {
-                    return new int[]{10};
-                } else {
-                    return new int[]{10};
-                }
+                return new int[]{10};
             }
 
         };

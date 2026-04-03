@@ -1348,8 +1348,8 @@ public final class MagicExpansionItemSetup {
                 ),Arrays.asList(SlimefunItems.MAGIC_SUGAR,new ItemStack(Material.BREAD),
                 FISH_LURE_BASIC,FISH_LURE_DUST,FISH_LURE_ORE,FISH_LURE_ALLOY_INGOT)).register(plugin);
 
-        Boolean FinalLureEnable = cfg.getBoolean("Fish.FishingRod.FISHING_ROD_FINAL_STICK.Enable.FinalLure");
-        Map lootTable;
+        boolean FinalLureEnable = cfg.getBoolean("Fish.FishingRod.FISHING_ROD_FINAL_STICK.Enable.FinalLure");
+        Map<String,List<WeightedItem>> lootTable;
         List USABLE_LURES;
         if(FinalLureEnable){
             lootTable = Map.of(

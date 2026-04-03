@@ -72,7 +72,7 @@ public class HolyPie extends SimpleSlimefunItem<ItemConsumptionHandler> implemen
         world.spawnParticle(Particle.HEART, loc, 15, 0.4, 0.4, 0.4, 0.1);
         world.spawnParticle(Particle.VILLAGER_HAPPY, loc, 20, 0.5, 0.5, 0.5, 0.1);
         new BukkitRunnable() {
-            int ticks = 0;
+            int ticks;
             @Override
             public void run() {
                 if (!p.isOnline() || !holyProtectedPlayers.contains(p.getUniqueId())) {
@@ -118,8 +118,7 @@ public class HolyPie extends SimpleSlimefunItem<ItemConsumptionHandler> implemen
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        Player p = (Player) event.getEntity();
+        if (!(event.getEntity() instanceof Player p)) return;
         if (holyProtectedPlayers.contains(p.getUniqueId())) {
             event.setCancelled(true);
             if (event.getCause() != EntityDamageEvent.DamageCause.VOID) {

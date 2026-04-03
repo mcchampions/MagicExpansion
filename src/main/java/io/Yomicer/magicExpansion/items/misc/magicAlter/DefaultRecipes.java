@@ -276,8 +276,7 @@ public class DefaultRecipes implements RecipeProvider{
         ItemStack enchantedBook = new ItemStack(Material.ENCHANTED_BOOK);
         ItemMeta meta = enchantedBook.getItemMeta();
 
-        if (meta instanceof EnchantmentStorageMeta) {
-            EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
+        if (meta instanceof EnchantmentStorageMeta storageMeta) {
 
             // 添加所有附魔
             for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {

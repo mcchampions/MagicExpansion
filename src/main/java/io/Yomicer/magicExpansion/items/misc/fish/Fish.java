@@ -1,6 +1,6 @@
 package io.Yomicer.magicExpansion.items.misc.fish;
 
-import io.Yomicer.magicExpansion.utils.ColorGradient;
+import lombok.Getter;
 
 import java.util.Random;
 
@@ -520,9 +520,14 @@ public enum Fish {
             ("§x§F§F§3§2§C§E[特殊作用]可用于发电")
     );
 
+    // Getter 省略（同上）
+    @Getter
     private final String displayName;
+    @Getter
     private final double minWeight;
+    @Getter
     private final double maxWeight;
+    @Getter
     private final Rarity rarity;
     private final String[] loreLines;
 
@@ -534,11 +539,6 @@ public enum Fish {
         this.loreLines = loreLines;
     }
 
-    // Getter 省略（同上）
-    public String getDisplayName() { return displayName; }
-    public double getMinWeight() { return minWeight; }
-    public double getMaxWeight() { return maxWeight; }
-    public Rarity getRarity() { return rarity; }
     public String[] getLoreLines() { return loreLines.clone(); }
 
 
@@ -643,6 +643,7 @@ public enum Fish {
     // ======================
     // 内部枚举：重量稀有度（独立于基础稀有度）
     // ======================
+    @Getter
     public enum WeightRarity {
         COMMON_FISH("§f普通鱼", "§f",1),
         RARE_FISH("§e稀有鱼", "§e",7),
@@ -659,19 +660,13 @@ public enum Fish {
             this.multiplier = multiplier;
         }
 
-        public String getDisplayName() { return displayName; }
-        public String getColorCode() { return colorCode; }
-        public int getMultiplier() {
-            return multiplier;
-        }
-
         public static int getMultiplierByName(String name) {
             if (name == null) {
                 return 1; // 默认倍率
             }
             try {
                 WeightRarity rarity = WeightRarity.valueOf(name);
-                return rarity.getMultiplier();
+                return rarity.multiplier;
             } catch (IllegalArgumentException e) {
                 return 1; // 名称无效，默认普通
             }
@@ -700,6 +695,7 @@ public enum Fish {
     // ======================
     // 基础稀有度（原系统）
     // ======================
+    @Getter
     public enum Rarity {
         COMMON("§f普通", "§f"),
         UNCOMMON("§a罕见", "§a"),
@@ -723,7 +719,5 @@ public enum Fish {
             this.colorCode = colorCode;
         }
 
-        public String getDisplayName() { return displayName; }
-        public String getColorCode() { return colorCode; }
     }
 }

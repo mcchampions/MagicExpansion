@@ -1,6 +1,5 @@
 package io.Yomicer.magicExpansion.items.skyBlock;
 
-import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.Yomicer.magicExpansion.utils.ColorGradient;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
@@ -10,8 +9,6 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.HologramOwner;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
-import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -173,17 +170,13 @@ public class SingleCubeOrigin extends SlimefunItem implements HologramOwner{
         }
 
         // 排除植物类、地毯、装饰性小物品
-        if (material.isBurnable() ||
-                material.toString().contains("CARPET") ||
-                material.toString().contains("FLOWER") ||
-                material.toString().contains("PLANT") ||
-                material.toString().contains("LEAVES")||
-                material.toString().contains("POTTED")||
-                material.toString().contains("SPAWNER")) {
-            return true;
-        }
-
-        return false;
+        return material.isBurnable() ||
+               material.toString().contains("CARPET") ||
+               material.toString().contains("FLOWER") ||
+               material.toString().contains("PLANT") ||
+               material.toString().contains("LEAVES") ||
+               material.toString().contains("POTTED") ||
+               material.toString().contains("SPAWNER");
     }
 
 

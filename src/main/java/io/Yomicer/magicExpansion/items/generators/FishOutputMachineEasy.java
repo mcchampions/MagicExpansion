@@ -4,7 +4,6 @@ import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.Yomicer.magicExpansion.MagicExpansion;
 import io.Yomicer.magicExpansion.items.abstracts.MenuBlock;
-import io.Yomicer.magicExpansion.items.misc.CargoCore;
 import io.Yomicer.magicExpansion.items.misc.CargoCoreMore;
 import io.Yomicer.magicExpansion.items.misc.fish.Fish;
 import io.Yomicer.magicExpansion.items.misc.fish.FishKeys;
@@ -17,7 +16,6 @@ import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
-import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
@@ -41,7 +39,6 @@ import static io.Yomicer.magicExpansion.items.misc.fish.Fish.WeightRarity;
 import static io.Yomicer.magicExpansion.utils.ColorGradient.getGradientName;
 import static io.Yomicer.magicExpansion.utils.ColorGradient.getRandomGradientName;
 import static io.Yomicer.magicExpansion.utils.SameItemJudge.itemFromBase64;
-import static io.Yomicer.magicExpansion.utils.SameItemJudge.itemToBase64;
 import static io.Yomicer.magicExpansion.utils.Utils.doGlow;
 
 public class FishOutputMachineEasy extends MenuBlock implements EnergyNetComponent, RecipeDisplayItem {
@@ -198,7 +195,7 @@ public class FishOutputMachineEasy extends MenuBlock implements EnergyNetCompone
         BlockMenu inv = StorageCacheUtils.getMenu(block.getLocation());
 
         if(inv != null && inv.hasViewer()) {
-            if (getCharge(block.getLocation()) < getEnergyConsumption()) {
+            if (getCharge(block.getLocation()) < ENERGY_CONSUMPTION) {
                 inv.addItem(48, new CustomItemStack(doGlow(Material.LANTERN), getGradientName("⚡机器停止运行⚡"),
                                 getGradientName("请检查电力供应是否充足")),
                         (player1, slot, item, action) -> false);
@@ -272,7 +269,7 @@ public class FishOutputMachineEasy extends MenuBlock implements EnergyNetCompone
         ItemStack VoidTouchSlotItem = inv.getItemInSlot(VoidTouchSlot);
         if (VoidTouchSlotItem != null && !VoidTouchSlotItem.getType().isAir() && outItems != null){
             SlimefunItem VoidTouchItem = SlimefunItem.getByItem(VoidTouchSlotItem);
-            if (VoidTouchItem != null && VoidTouchItem instanceof VoidTouch) {
+            if (VoidTouchItem instanceof VoidTouch) {
                 ItemMeta VoidTouchMeta = VoidTouchSlotItem.getItemMeta();
                 if (VoidTouchMeta != null) {
                     PersistentDataContainer container = VoidTouchMeta.getPersistentDataContainer();
@@ -295,7 +292,7 @@ public class FishOutputMachineEasy extends MenuBlock implements EnergyNetCompone
                             if (sfItem != null) {
                                 if (sfItem instanceof CargoCoreMore) {
                                     if (pushItemToCargoCore(targetLocation, outItems)){
-                                        removeCharge(block.getLocation(), getEnergyConsumption());
+                                        removeCharge(block.getLocation(), ENERGY_CONSUMPTION);
                                         return;
                                     }
                                 }
@@ -307,7 +304,7 @@ public class FishOutputMachineEasy extends MenuBlock implements EnergyNetCompone
         }
 
         if (outItems != null && inv != null) {
-            removeCharge(block.getLocation(), getEnergyConsumption());
+            removeCharge(block.getLocation(), ENERGY_CONSUMPTION);
             pushAllItems(inv,outItems, getOutputSlots());
         }
 
@@ -357,13 +354,11 @@ public class FishOutputMachineEasy extends MenuBlock implements EnergyNetCompone
                                     return true; // 有该物品且数量>0
                                 }
                             } catch (Exception e) {
-                                continue;
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 
@@ -425,7 +420,6 @@ public class FishOutputMachineEasy extends MenuBlock implements EnergyNetCompone
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 

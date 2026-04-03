@@ -2,11 +2,8 @@ package io.Yomicer.magicExpansion.items.misc.fish;
 
 import io.Yomicer.magicExpansion.MagicExpansion;
 import io.Yomicer.magicExpansion.core.MagicExpansionItems;
-import io.Yomicer.magicExpansion.utils.ColorGradient;
-import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -43,17 +40,17 @@ public class FishKeys {
         // 👉 想加新稀有度？直接 put 一行即可！
     }};
 
-    private static final Set<ItemStack> MAGIC_FISHING_RODS_NEW = new HashSet<>(Arrays.asList(
+    private static final Set<ItemStack> MAGIC_FISHING_RODS_NEW = new HashSet<>(List.of(
 
             MagicExpansionItems.FISHING_ROD_NEW_PLAYER
 
     ));
-    private static final Set<ItemStack> MAGIC_FISHING_RODS_ADVANCED = new HashSet<>(Arrays.asList(
+    private static final Set<ItemStack> MAGIC_FISHING_RODS_ADVANCED = new HashSet<>(List.of(
 
             MagicExpansionItems.FISHING_ROD_WIND_SPEAKER
 
     ));
-    private static final Set<ItemStack> MAGIC_FISHING_RODS_ULTRA = new HashSet<>(Arrays.asList(
+    private static final Set<ItemStack> MAGIC_FISHING_RODS_ULTRA = new HashSet<>(List.of(
 
             MagicExpansionItems.FISHING_ROD_FINAL_STICK
 
@@ -160,64 +157,56 @@ public class FishKeys {
     }
 
     public static List<Fish> getPossibleFishesForRarity(Fish.Rarity rarity) {
-        switch (rarity) {
-            case COMMON:
-                return Arrays.asList(Fish.SanWenFish, Fish.XueFish);
-            case UNCOMMON:
-                return Arrays.asList(Fish.HeTun);
-            case RARE:
-                return Arrays.asList(Fish.ReDaiFish,Fish.CopperDustFish,Fish.AluminumDustFish,
-                Fish.GoldDustFish, Fish.IronDustFish, Fish.LeadDustFish, Fish.TinDustFish,
-                        Fish.MagnesiumDustFish, Fish.SilverDustFish, Fish.ZincDustFish);
-            case RARE_POOL_ORE:
+        return switch (rarity) {
+            case COMMON -> Arrays.asList(Fish.SanWenFish, Fish.XueFish);
+            case UNCOMMON -> Arrays.asList(Fish.HeTun);
+            case RARE -> Arrays.asList(Fish.ReDaiFish, Fish.CopperDustFish, Fish.AluminumDustFish,
+                    Fish.GoldDustFish, Fish.IronDustFish, Fish.LeadDustFish, Fish.TinDustFish,
+                    Fish.MagnesiumDustFish, Fish.SilverDustFish, Fish.ZincDustFish);
+            case RARE_POOL_ORE ->
                 // 稀有矿物鱼池：包含所有可产出矿物资源的稀有鱼种
-                return Arrays.asList(Fish.CoalFish,
-                        Fish.EmeraldFish, Fish.LapisFish,
-                        Fish.DiamondFish, Fish.QuartzFish,
-                        Fish.AmethystFish, Fish.IronFish,
-                        Fish.GoldFish, Fish.CopperFish,
-                        Fish.NetheriteFish,Fish.GlowStoneDustFish,
-                        Fish.RedstoneFish);
-            case RARE_POOL_DUST:
+                    Arrays.asList(Fish.CoalFish,
+                            Fish.EmeraldFish, Fish.LapisFish,
+                            Fish.DiamondFish, Fish.QuartzFish,
+                            Fish.AmethystFish, Fish.IronFish,
+                            Fish.GoldFish, Fish.CopperFish,
+                            Fish.NetheriteFish, Fish.GlowStoneDustFish,
+                            Fish.RedstoneFish);
+            case RARE_POOL_DUST ->
                 // 稀有矿粉鱼池：包含所有可产出矿粉资源的稀有鱼种
-                return Arrays.asList(Fish.ReDaiFish,
-                        Fish.CopperDustFish, Fish.AluminumDustFish,
-                        Fish.GoldDustFish, Fish.IronDustFish,
-                        Fish.LeadDustFish, Fish.TinDustFish,
-                        Fish.MagnesiumDustFish, Fish.SilverDustFish,
-                        Fish.ZincDustFish);
-            case RARE_POOL_INDUSTRY:
+                    Arrays.asList(Fish.ReDaiFish,
+                            Fish.CopperDustFish, Fish.AluminumDustFish,
+                            Fish.GoldDustFish, Fish.IronDustFish,
+                            Fish.LeadDustFish, Fish.TinDustFish,
+                            Fish.MagnesiumDustFish, Fish.SilverDustFish,
+                            Fish.ZincDustFish);
+            case RARE_POOL_INDUSTRY ->
                 // 稀有矿粉鱼池：包含所有可产出矿粉资源的稀有鱼种
-                return Arrays.asList(Fish.ShuLingYu,
-                        Fish.UraniumFish,Fish.OilRockFish,
-                        Fish.SiliconFish,Fish.SulfateFish
+                    Arrays.asList(Fish.ShuLingYu,
+                            Fish.UraniumFish, Fish.OilRockFish,
+                            Fish.SiliconFish, Fish.SulfateFish
 
-                        );
-            case EPIC_POOL_INDUSTRY:
+                    );
+            case EPIC_POOL_INDUSTRY ->
                 // 稀有矿粉鱼池：包含所有可产出矿粉资源的稀有鱼种
-                return Arrays.asList(Fish.FoamCrystalFish,
-                        Fish.BlackDiamondFish,Fish.EnchantedBottleFish
+                    Arrays.asList(Fish.FoamCrystalFish,
+                            Fish.BlackDiamondFish, Fish.EnchantedBottleFish
 
-                        );
-            case EPIC_POOL_ALLOY_INGOT:
-                return Arrays.asList(ReinforcedAlloyFish,
-                        HardenedMetalFish, DamascusSoulFish,SteelSoulFish,
-                        BronzeAncientFish, HardlightAluFish, SilverCopperFish,
-                        BrassResonanceFish, AluminumBrassFish, AluminumBronzeFish,
-                        CorinthianBronzeFish, SolderFlowFish, NickelSpiritFish,
-                        CobaltFlameFish, SiliconIronFish, CarbonSoulFish,
-                        GildedIronFish, RedstoneAlloyFish, NeptuniumShadowFish,
-                        PlutoniumCoreFish
-                );
-            case EPIC:
-                return Arrays.asList(Fish.MYSTIC_EEL);
-            case LEGENDARY:
-                return Arrays.asList(Fish.LegendaryLuFish);
-            case LEGENDARY_EEL:
-                return Arrays.asList(LegendaryEelFish);
-            default:
-                return Collections.singletonList(Fish.SanWenFish);
-        }
+                    );
+            case EPIC_POOL_ALLOY_INGOT -> Arrays.asList(ReinforcedAlloyFish,
+                    HardenedMetalFish, DamascusSoulFish, SteelSoulFish,
+                    BronzeAncientFish, HardlightAluFish, SilverCopperFish,
+                    BrassResonanceFish, AluminumBrassFish, AluminumBronzeFish,
+                    CorinthianBronzeFish, SolderFlowFish, NickelSpiritFish,
+                    CobaltFlameFish, SiliconIronFish, CarbonSoulFish,
+                    GildedIronFish, RedstoneAlloyFish, NeptuniumShadowFish,
+                    PlutoniumCoreFish
+            );
+            case EPIC -> Arrays.asList(Fish.MYSTIC_EEL);
+            case LEGENDARY -> Arrays.asList(Fish.LegendaryLuFish);
+            case LEGENDARY_EEL -> Arrays.asList(LegendaryEelFish);
+            default -> Collections.singletonList(Fish.SanWenFish);
+        };
     }
 
 

@@ -4,7 +4,6 @@ import io.Yomicer.magicExpansion.MagicExpansion;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.Vector;
 
 public class ZKBTMPlayer {
     private final MagicExpansion plugin; // 替换为你的主类名
@@ -26,7 +25,7 @@ public class ZKBTMPlayer {
         player.sendTitle("§e✨", "§eA cute little melody for you~", 10, 60, 20);
 
         new BukkitRunnable() {
-            int beat = 0;
+            int beat;
             final int TICKS_PER_BEAT = 12; // ≈100 BPM，轻快可爱节奏
 
             @Override

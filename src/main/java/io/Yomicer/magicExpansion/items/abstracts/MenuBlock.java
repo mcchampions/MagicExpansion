@@ -8,6 +8,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.core.handlers.BlockPlaceHandler;
+import lombok.Getter;
 import me.mrCookieSlime.Slimefun.api.BlockStorage;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
@@ -23,12 +24,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
+@Getter
 @ParametersAreNonnullByDefault
 public abstract class MenuBlock extends SlimefunItem {
     @ParametersAreNonnullByDefault
     protected MenuBlock(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
-        this.addItemHandler(new ItemHandler[]{new BlockBreakHandler(false, false) {
+        this.addItemHandler(new BlockBreakHandler(false, false) {
             @ParametersAreNonnullByDefault
             public void onPlayerBreak(BlockBreakEvent e, ItemStack itemStack, List<ItemStack> list) {
                 BlockMenu menu = BlockStorage.getInventory(e.getBlock());
@@ -42,7 +44,7 @@ public abstract class MenuBlock extends SlimefunItem {
             public void onPlayerPlace(BlockPlaceEvent e) {
                 MenuBlock.this.onPlace(e, e.getBlockPlaced());
             }
-        }});
+        });
     }
 
     public void postRegister() {
@@ -97,10 +99,6 @@ public abstract class MenuBlock extends SlimefunItem {
 
         this.PowerType = powerType;
         return this;
-    }
-
-    public String getPowerType() {
-        return PowerType;
     }
 
 

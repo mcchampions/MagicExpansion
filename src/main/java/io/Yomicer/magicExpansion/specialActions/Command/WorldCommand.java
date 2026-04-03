@@ -30,12 +30,10 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage("§cOnly players can use this command!");
             return true;
         }
-
-        Player player = (Player) sender;
 
         // 权限检查
         if (!player.isOp() && !player.hasPermission("MagicExpansion.use")) {
@@ -184,7 +182,7 @@ public class WorldCommand implements CommandExecutor, TabCompleter {
         if (args.length == 1) {
             // 提供第一级补全：子命令
             suggestions.addAll(Arrays.asList("select", "exitselect", "exportmap", "paste", "clear", "ctrlv"));
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("paste")) {
+        } else if (args.length == 2 && "paste".equalsIgnoreCase(args[0])) {
             // 如果是 "paste" 子命令，提供文件名补全
             File mapsDir = new File(plugin.getDataFolder(), "maps");
             if (mapsDir.exists() && mapsDir.isDirectory()) {

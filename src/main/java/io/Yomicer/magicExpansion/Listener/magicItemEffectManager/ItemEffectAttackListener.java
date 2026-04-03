@@ -1,6 +1,5 @@
 package io.Yomicer.magicExpansion.Listener.magicItemEffectManager;
 
-import io.Yomicer.magicExpansion.Listener.weaponApply.SlownessManager;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Entity;
@@ -26,8 +25,7 @@ public class ItemEffectAttackListener implements Listener {
 
     @EventHandler
     public void onPlayerAttack(EntityDamageByEntityEvent event) {
-        if (event.getDamager() instanceof Player) {
-            Player player = (Player) event.getDamager();
+        if (event.getDamager() instanceof Player player) {
             ItemStack item = player.getInventory().getItemInMainHand();
 
             // 获取物品的 PDC
@@ -58,7 +56,7 @@ public class ItemEffectAttackListener implements Listener {
             case "MagicExpansion.Knockback": // 击退效果
                 if (value instanceof Integer knockbackStrength) {
                     Location location = livingTarget.getLocation();
-                    location.setY(location.getY() + knockbackStrength*2);
+                    location.setY(location.getY() + (knockbackStrength << 1));
                     livingTarget.teleport(location);
                     double knockbackStrengthDouble = (double) knockbackStrength;
                     Vector velocity = calculateKnockbackVelocity(livingTarget, knockbackStrengthDouble);
@@ -152,7 +150,7 @@ public class ItemEffectAttackListener implements Listener {
 
         // 将目标传送到玩家的位置，并更新朝向
         if (target instanceof LivingEntity) {
-            ((LivingEntity) target).teleport(newTargetLocation);
+            target.teleport(newTargetLocation);
         } else {
             // 如果目标不是 LivingEntity，则仅传送位置
             target.teleport(newTargetLocation);

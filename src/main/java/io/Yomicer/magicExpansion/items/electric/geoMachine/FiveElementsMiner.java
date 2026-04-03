@@ -84,7 +84,7 @@ public class FiveElementsMiner extends AContainer implements RecipeDisplayItem ,
     public FiveElementsMiner(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
-        processor.setProgressBar(getProgressBar());
+        processor.setProgressBar(PROGRESS_ITEM);
 
         gold = Slimefun.getRegistry()
                 .getGEOResources()
@@ -120,13 +120,9 @@ public class FiveElementsMiner extends AContainer implements RecipeDisplayItem ,
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                if (!(p.hasPermission("slimefun.inventory.bypass")
-                        || Slimefun.getProtectionManager()
-                        .hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK))) {
-                    return false;
-                }
-
-                return true;
+                return p.hasPermission("slimefun.inventory.bypass")
+                       || Slimefun.getProtectionManager()
+                               .hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK);
             }
 
             @Override

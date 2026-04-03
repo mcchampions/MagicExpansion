@@ -75,7 +75,7 @@ public class ConfigLoader {
     public static Config loadInternalConfig(String name){
         FileConfiguration config = new YamlConfiguration();
         try{
-            config.load((Reader)( new InputStreamReader(plugin.getClass().getResourceAsStream("/"+ name + ".yml"), Charsets.UTF_8)));
+            config.load(new InputStreamReader(plugin.getClass().getResourceAsStream("/" + name + ".yml"), Charsets.UTF_8));
             config.getString("options.test");
 
         }catch (Throwable e){

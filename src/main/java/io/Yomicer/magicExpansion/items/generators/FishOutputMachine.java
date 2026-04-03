@@ -14,7 +14,6 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetComponent;
-import io.github.thebusybiscuit.slimefun4.core.attributes.EnergyNetProvider;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.networks.energy.EnergyNetComponentType;
 import io.github.thebusybiscuit.slimefun4.implementation.SlimefunItems;
@@ -27,7 +26,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -37,7 +35,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-import static io.Yomicer.magicExpansion.items.misc.fish.Fish.*;
 import static io.Yomicer.magicExpansion.utils.ColorGradient.getGradientName;
 import static io.Yomicer.magicExpansion.utils.ColorGradient.getRandomGradientName;
 import static io.Yomicer.magicExpansion.utils.SameItemJudge.itemFromBase64;
@@ -197,7 +194,7 @@ public class FishOutputMachine extends MenuBlock implements EnergyNetComponent, 
         BlockMenu inv = StorageCacheUtils.getMenu(block.getLocation());
 
         if(inv != null && inv.hasViewer()) {
-            if (getCharge(block.getLocation()) < getEnergyConsumption()) {
+            if (getCharge(block.getLocation()) < ENERGY_CONSUMPTION) {
                 inv.addItem(48, new CustomItemStack(doGlow(Material.LANTERN), getGradientName("⚡机器停止运行⚡"),
                                 getGradientName("请检查电力供应是否充足")),
                         (player1, slot, item, action) -> false);
@@ -269,7 +266,7 @@ public class FishOutputMachine extends MenuBlock implements EnergyNetComponent, 
         ItemStack VoidTouchSlotItem = inv.getItemInSlot(VoidTouchSlot);
         if (VoidTouchSlotItem != null && !VoidTouchSlotItem.getType().isAir() && outItems != null){
             SlimefunItem VoidTouchItem = SlimefunItem.getByItem(VoidTouchSlotItem);
-            if (VoidTouchItem != null && VoidTouchItem instanceof VoidTouch) {
+            if (VoidTouchItem instanceof VoidTouch) {
                 ItemMeta VoidTouchMeta = VoidTouchSlotItem.getItemMeta();
                 if (VoidTouchMeta != null) {
                     PersistentDataContainer container = VoidTouchMeta.getPersistentDataContainer();
@@ -292,7 +289,7 @@ public class FishOutputMachine extends MenuBlock implements EnergyNetComponent, 
                             if (sfItem != null) {
                                 if (sfItem instanceof CargoCoreMore) {
                                     if (pushItemToCargoCore(targetLocation, outItems)){
-                                        removeCharge(block.getLocation(), getEnergyConsumption());
+                                        removeCharge(block.getLocation(), ENERGY_CONSUMPTION);
                                         return;
                                     }
                                 }
@@ -304,7 +301,7 @@ public class FishOutputMachine extends MenuBlock implements EnergyNetComponent, 
         }
 
         if (outItems != null && inv != null) {
-            removeCharge(block.getLocation(), getEnergyConsumption());
+            removeCharge(block.getLocation(), ENERGY_CONSUMPTION);
             pushAllItems(inv,outItems, getOutputSlots());
         }
 
@@ -354,13 +351,11 @@ public class FishOutputMachine extends MenuBlock implements EnergyNetComponent, 
                                     return true; // 有该物品且数量>0
                                 }
                             } catch (Exception e) {
-                                continue;
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 
@@ -422,7 +417,6 @@ public class FishOutputMachine extends MenuBlock implements EnergyNetComponent, 
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 

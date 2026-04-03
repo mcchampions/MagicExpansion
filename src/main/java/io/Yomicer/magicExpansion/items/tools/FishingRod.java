@@ -8,6 +8,7 @@ import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -25,6 +26,7 @@ public class FishingRod extends SlimefunItem implements RecipeDisplayItem {
 
     private final Map<Enchantment, Integer> enchantments;
     private final boolean glow;
+    @Getter
     private final Map<String, List<WeightedItem>> lootTable;
 
     // ✅ 所有可使用的鱼饵定义在这里（Material, 显示名, Lore）
@@ -94,11 +96,6 @@ public class FishingRod extends SlimefunItem implements RecipeDisplayItem {
                 new WeightedItem(new ItemStack(Material.COD), 50),
                 new WeightedItem(new ItemStack(Material.INK_SAC), 30)
         );
-    }
-
-
-    public Map<String, List<WeightedItem>> getLootTable() {
-        return lootTable;
     }
 
 

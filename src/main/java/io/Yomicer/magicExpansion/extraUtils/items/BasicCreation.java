@@ -1,8 +1,6 @@
 package io.Yomicer.magicExpansion.extraUtils.items;
 
-import io.Yomicer.magicExpansion.core.MagicExpansionItems;
 import io.Yomicer.magicExpansion.utils.ColorGradient;
-import io.Yomicer.magicExpansion.utils.itemUtils.sfItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import org.bukkit.Material;

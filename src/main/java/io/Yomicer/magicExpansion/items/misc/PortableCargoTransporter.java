@@ -235,8 +235,7 @@ public class PortableCargoTransporter extends SlimefunItem implements Listener {
     private ItemStack findFirstValidCargoFragment(Player player) {
         ItemStack[] inventory = player.getInventory().getContents();
 
-        for (int i = 0; i < inventory.length; i++) {
-            ItemStack item = inventory[i];
+        for (ItemStack item : inventory) {
             if (isCargoFragment(item)) {
                 return item;
             }

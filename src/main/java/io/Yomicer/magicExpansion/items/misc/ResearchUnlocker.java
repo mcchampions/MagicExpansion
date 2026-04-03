@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 public class ResearchUnlocker extends SimpleSlimefunItem<ItemUseHandler> {
@@ -45,51 +44,49 @@ public class ResearchUnlocker extends SimpleSlimefunItem<ItemUseHandler> {
             Player player = e.getPlayer();
 
             // 异步获取玩家档案（避免卡顿）
-            PlayerProfile.get(player, profile -> {
-                Bukkit.getScheduler().runTask(MagicExpansion.getInstance(), () -> {
-                    // 获取所有研究
-                    List<Research> allResearches = new ArrayList<>(Slimefun.getRegistry().getResearches());
+            PlayerProfile.get(player, profile -> Bukkit.getScheduler().runTask(MagicExpansion.getInstance(), () -> {
+                // 获取所有研究
+                List<Research> allResearches = new ArrayList<>(Slimefun.getRegistry().getResearches());
 
-                    // 获取玩家已解锁的研究
-                    List<Research> unlockedResearches = new ArrayList<>();
-                    for (Research research : allResearches) {
-                        if (profile.hasUnlocked(research)) {
-                            unlockedResearches.add(research);
-                        }
+                // 获取玩家已解锁的研究
+                List<Research> unlockedResearches = new ArrayList<>();
+                for (Research research : allResearches) {
+                    if (profile.hasUnlocked(research)) {
+                        unlockedResearches.add(research);
                     }
+                }
 
-                    // 判断是否全解锁
-                    if (unlockedResearches.size() >= allResearches.size()) {
-                        // 全解锁提示
-                        sendAllUnlockedMessage(player);
-                    } else {
-                        // 找出未解锁的研究
-                        List<Research> lockedResearches = new ArrayList<>(allResearches);
-                        lockedResearches.removeAll(unlockedResearches);
+                // 判断是否全解锁
+                if (unlockedResearches.size() >= allResearches.size()) {
+                    // 全解锁提示
+                    sendAllUnlockedMessage(player);
+                } else {
+                    // 找出未解锁的研究
+                    List<Research> lockedResearches = new ArrayList<>(allResearches);
+                    lockedResearches.removeAll(unlockedResearches);
 
-                        if (!lockedResearches.isEmpty()) {
-                            // 随机选择一个未解锁的研究
-                            Research target = lockedResearches.get(random.nextInt(lockedResearches.size()));
+                    if (!lockedResearches.isEmpty()) {
+                        // 随机选择一个未解锁的研究
+                        Research target = lockedResearches.get(random.nextInt(lockedResearches.size()));
 
-                            // 使用 API 解锁研究（不再使用命令）
-                            profile.setResearched(target, true);
-                            profile.save(); // 立即保存更改
+                        // 使用 API 解锁研究（不再使用命令）
+                        profile.setResearched(target, true);
+                        profile.save(); // 立即保存更改
 
-                            // 播放音效
-                            player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
-                            player.sendMessage(ChatColor.GREEN + "✓ 已解锁研究: " + ChatColor.YELLOW + target.getName(player));
-                        }
+                        // 播放音效
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.0f);
+                        player.sendMessage(ChatColor.GREEN + "✓ 已解锁研究: " + ChatColor.YELLOW + target.getName(player));
                     }
+                }
 
-                    // 消耗物品（可选）
-                    ItemStack item = e.getItem();
-                    if (item.getAmount() > 1) {
-                        item.setAmount(item.getAmount() - 1);
-                    } else {
-                        player.getInventory().setItemInMainHand(null);
-                    }
-                });
-            });
+                // 消耗物品（可选）
+                ItemStack item = e.getItem();
+                if (item.getAmount() > 1) {
+                    item.setAmount(item.getAmount() - 1);
+                } else {
+                    player.getInventory().setItemInMainHand(null);
+                }
+            }));
         };
     }
 

@@ -139,7 +139,7 @@ public class QuantumCache extends ItemStackCache {
         lore.add("");
         lore.add(String.format("§e物品: %s", itemName));
         lore.add(String.format(
-                "§e数量: §f%s", this.getAmount()));
+                "§e数量: §f%s", this.amount));
         if (this.supportsCustomMaxAmount) {
             lore.add(String.format(
                     "§e当前容量限制: §c%s", this.getLimit()));
@@ -164,7 +164,7 @@ public class QuantumCache extends ItemStackCache {
         lore.set(
                 lore.size() - 1 - loreIndexModifier,
                 String.format(
-                        "§e数量: §f%s", this.getAmount()));
+                        "§e数量: §f%s", this.amount));
         if (this.supportsCustomMaxAmount) {
             lore.set(
                     lore.size() - loreIndexModifier,

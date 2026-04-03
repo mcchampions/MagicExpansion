@@ -2,11 +2,9 @@ package io.Yomicer.magicExpansion.items.misc;
 
 import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
-import io.Yomicer.magicExpansion.MagicExpansion;
 import io.Yomicer.magicExpansion.core.MagicExpansionItems;
 import io.Yomicer.magicExpansion.utils.ColorGradient;
 import io.Yomicer.magicExpansion.utils.ConvertItem;
-import io.Yomicer.magicExpansion.utils.CreateItem;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -20,18 +18,16 @@ import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.item_transport.ItemTransportFlow;
-import net.md_5.bungee.api.chat.hover.content.Item;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+
+import java.util.Map;
 
 import static io.Yomicer.magicExpansion.utils.Utils.doGlow;
 
@@ -86,9 +82,9 @@ public class ForceTwoToRsc extends SlimefunItem implements EnergyNetComponent {
         BlockMenu menu = StorageCacheUtils.getMenu(block.getLocation());
         if (menu == null) return;
         Location loc = block.getLocation();
-        int energyConsumption = getEnergyConsumption();
+        int energyConsumption = craftPerTick;
         if(menu != null && menu.hasViewer()) {
-        if (getCharge(block.getLocation()) < getEnergyConsumption()) {
+        if (getCharge(block.getLocation()) < craftPerTick) {
             //电量不足
             menu.addItem(4, new CustomItemStack(new ItemStack (Material.CAMPFIRE), "§c电量不足"),
                     (p, slot, item, action) -> false);
@@ -97,7 +93,7 @@ public class ForceTwoToRsc extends SlimefunItem implements EnergyNetComponent {
             //电量不足
             menu.addItem(4, new CustomItemStack(new ItemStack(Material.SOUL_CAMPFIRE), "§b资源转换器",
                             "§b类型：§e" + "魔法2.0转RSC魔法资源",
-                            "§b耗电速度：§e" + getEnergyConsumption() * 2 + " J/s",
+                            "§b耗电速度：§e" + (getEnergyConsumption() << 1) + " J/s",
                             "§b电量存储：§e" + getCharge(block.getLocation()) + " J"),
                     (p, slot, item, action) -> false);
 
@@ -125,9 +121,9 @@ public class ForceTwoToRsc extends SlimefunItem implements EnergyNetComponent {
             if (inputItem == null || inputItem.getType() == Material.AIR) continue;
 
             // 检查是否是目标 RSC 物品
-            for (ItemStack rscItem : conversionMap.keySet()) {
-                if (inputItem.isSimilar(rscItem)) {
-                    String targetKey = conversionMap.get(rscItem);
+            for (Map.Entry<ItemStack, String> entry : conversionMap.entrySet()) {
+                if (inputItem.isSimilar(entry.getKey())) {
+                    String targetKey = entry.getValue();
                     ItemStack outputTemplate = ConvertItem.stoneCreateItem(targetKey);
                     if (outputTemplate == null || outputTemplate.getType() == Material.AIR) {
                         break;

@@ -24,9 +24,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class FiveElementTouch extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 

@@ -19,7 +19,6 @@ import me.mrCookieSlime.Slimefun.api.inventory.BlockMenuPreset;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -27,12 +26,9 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.xml.stream.events.Namespace;
 
 import java.util.*;
 
-import static io.Yomicer.magicExpansion.items.misc.fish.Fish.MYSTIC_EEL;
-import static io.Yomicer.magicExpansion.items.misc.fish.Fish.XueFish;
 import static io.Yomicer.magicExpansion.utils.ColorGradient.getGradientName;
 
 

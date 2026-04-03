@@ -22,12 +22,12 @@ public class Language {
     }
 
     public static String get(String key) {
-        String s = (String) getLanguage().get(key);
+        String s = (String) LANGUAGE.get(key);
         return s != null ? s : key;
     }
 
     public static List<String> getList(String key) {
-        List<String> ls = (List<String>) getLanguage().get(key);
+        List<String> ls = (List<String>) LANGUAGE.get(key);
         return ls != null ? ls : new ArrayList<>();
     }
 

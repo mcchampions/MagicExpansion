@@ -37,7 +37,7 @@ public class ColorGradient {
         StringBuilder stringBuilder = new StringBuilder();
 
         // 如果文本为空或长度不足，补全空格
-        if (text.length() == 0) {
+        if (text.isEmpty()) {
             text += " ";
         }
         if (text.length() == 1) {
@@ -87,7 +87,7 @@ public class ColorGradient {
         StringBuilder stringBuilder = new StringBuilder();
 
         // 如果文本为空或长度不足，补全空格
-        if (text.length() == 0) {
+        if (text.isEmpty()) {
             text += " ";
         }
         if (text.length() == 1) {
@@ -204,16 +204,15 @@ public class ColorGradient {
     }
 
     private static String applySingleColor(String text, Color color) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("§x")
-                .append("§").append(codeColor(color.getRed() / 16))
-                .append("§").append(codeColor(color.getRed() % 16))
-                .append("§").append(codeColor(color.getGreen() / 16))
-                .append("§").append(codeColor(color.getGreen() % 16))
-                .append("§").append(codeColor(color.getBlue() / 16))
-                .append("§").append(codeColor(color.getBlue() % 16));
+        String sb = "§x" +
+                    "§" + codeColor(color.getRed() / 16) +
+                    "§" + codeColor(color.getRed() % 16) +
+                    "§" + codeColor(color.getGreen() / 16) +
+                    "§" + codeColor(color.getGreen() % 16) +
+                    "§" + codeColor(color.getBlue() / 16) +
+                    "§" + codeColor(color.getBlue() % 16);
 
-        return sb.toString() + text;
+        return sb + text;
     }
 
 

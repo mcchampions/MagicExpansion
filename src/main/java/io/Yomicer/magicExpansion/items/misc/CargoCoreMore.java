@@ -6,7 +6,6 @@ import io.Yomicer.magicExpansion.MagicExpansion;
 import io.Yomicer.magicExpansion.items.tools.VoidTouch;
 import io.Yomicer.magicExpansion.utils.ColorGradient;
 import io.Yomicer.magicExpansion.utils.SameItemJudge;
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -19,7 +18,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.handlers.SimpleBlockBreakHandler;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.Configuration.Config;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -32,7 +31,6 @@ import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -43,7 +41,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -62,7 +59,9 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
 
     //    private final int[] pinkBorder = {51,52};
     private final int[] blueBorder = {46,47};
+    @Getter
     private final int[] inputSlots = {0,1,2,3,4 ,9,10,11,12,13 ,18,19,20,21,22};
+    @Getter
     private final int[] outputSlots = {6,7,8,  15,16,17,  24,25,26};
     private final int[] inputOutputLine = {5,14,23};
     private final int[] arrowSlot = {45,48,50,51,52,53};
@@ -263,14 +262,6 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
 
         fragment.setItemMeta(meta);
         return fragment;
-    }
-
-    public int[] getInputSlots() {
-        return inputSlots;
-    }
-
-    public int[] getOutputSlots() {
-        return outputSlots;
     }
 
 
@@ -575,7 +566,6 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                     return (int) Math.min(remainingSpace, amountToAdd);
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 
@@ -619,7 +609,6 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                     return currentCount + amountToAdd <= maxCount;
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 
@@ -893,11 +882,10 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                         }
 
                         if (count <= 0 && maxCount == -1) {
-                            continue; // 跳过这个槽位
+                            // 跳过这个槽位
                         }
                     } catch (Exception e) {
                         // 解析失败，跳过这个槽位
-                        continue;
                     }
                 }
             }
@@ -1112,9 +1100,7 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                     playerData.set(inputKey, PersistentDataType.INTEGER, targetDataSlot);
 
                     // 设置聊天监听器
-                    MagicExpansion.getInstance().getServer().getScheduler().runTask(MagicExpansion.getInstance(), () -> {
-                        setMaxAmountInputHandler(player, inputKey, data, menu);
-                    });
+                    MagicExpansion.getInstance().getServer().getScheduler().runTask(MagicExpansion.getInstance(), () -> setMaxAmountInputHandler(player, inputKey, data, menu));
                 }
                 else if (clickAction.isRightClicked() && !clickAction.isShiftClicked()) {
                     // 右键：设置持续输出状态
@@ -1272,13 +1258,11 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                                 p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.5F, 2.0F);
 
                                 if (menu != null) {
-                                    if (menu instanceof BlockMenu) {
-                                        BlockMenu blockMenu = (BlockMenu) menu;
+                                    if (menu instanceof BlockMenu blockMenu) {
                                         if (blockMenu.getLocation() != null) {
                                             updateStorageDisplay(blockMenu, data);
                                         }
-                                    } else if (menu instanceof ChestMenu) {
-                                        ChestMenu chestMenu = (ChestMenu) menu;
+                                    } else if (menu instanceof ChestMenu chestMenu) {
                                         // 对于 ChestMenu，我们需要刷新整个菜单
                                         // 这里需要获取当前的页码信息
                                         int currentPage = 0; // 你需要从某个地方获取当前页码
@@ -1300,7 +1284,7 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                         p.sendMessage("§b范围: -1~9,223,372,036,854,775,807 (不需要输入逗号，具体数字即可)");
                         p.sendMessage("§7输入 §e-1 §7表示无限制，输入 §e0 §7取消");
                         p.sendMessage("§7请输入新的最大数量：");
-                        return; // 不清理数据，让玩家继续输入
+                        // 不清理数据，让玩家继续输入
                     } catch (Exception e) {
                         p.sendMessage("§c设置过程中发生错误，请重试");
                         e.printStackTrace();
@@ -1570,9 +1554,7 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                     playerData.set(inputKey, PersistentDataType.INTEGER, targetDataSlot1);
 
                     // 设置聊天监听器
-                    MagicExpansion.getInstance().getServer().getScheduler().runTask(MagicExpansion.getInstance(), () -> {
-                        setMaxAmountInputHandler(p, inputKey, data, menu);
-                    });
+                    MagicExpansion.getInstance().getServer().getScheduler().runTask(MagicExpansion.getInstance(), () -> setMaxAmountInputHandler(p, inputKey, data, menu));
                 }
                 else if (action.isRightClicked() && !action.isShiftClicked()) {
                     // 右键：设置持续输出状态
@@ -1873,7 +1855,7 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
             1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 3456
     };
 
-    private int translateOutputPage = 0;
+    private int translateOutputPage;
 
 
     private long getStoredItemCount(@Nonnull Block block, int index) {
@@ -2420,11 +2402,10 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
         Block targetBlock = targetLocation.getBlock();
         BlockState blockState = targetBlock.getState();
 
-        if (!(blockState instanceof InventoryHolder)) {
+        if (!(blockState instanceof InventoryHolder holder)) {
             return;
         }
 
-        InventoryHolder holder = (InventoryHolder) blockState;
         Inventory inventory = holder.getInventory();
 
         // 计算实际传输数量
@@ -2580,16 +2561,12 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
 
         return totalCount;
     }
 
-    /**
-     * 从主存储系统扣除物品（修复关键问题）
-     */
     /**
      * 从主存储系统扣除物品 - 修复版本
      */
@@ -2648,7 +2625,6 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                     }
                 }
             } catch (Exception e) {
-                continue;
             }
         }
         return 0;
@@ -2850,7 +2826,7 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
     private static final int[] INPUT_BIND_SLOTS = {41, 42, 43, 44}; // 输入绑定槽位
     private static final int INPUT_PAIRS_PER_PAGE = 4; // 每页显示4组（对应4个槽位）
     private static final int MAX_INPUT_BIND_PAIRS = 512; // 最大输入绑定数量
-    private int inputBindPage = 0; // 输入绑定当前页码
+    private int inputBindPage; // 输入绑定当前页码
 
     /**
      * 处理所有输入传输（从绑定机器抽取物品）- 修复版
@@ -2888,12 +2864,8 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
 
         // 检查是否有有效的物品槽位
         BlockMenu sourceMenu = BlockStorage.getInventory(targetBlock);
-        if (sourceMenu == null) {
-//            Debug.logInfo("输入源没有有效的菜单: " + location);
-            return false;
-        }
-
-        return true;
+        //            Debug.logInfo("输入源没有有效的菜单: " + location);
+        return sourceMenu != null;
     }
 
     /**
@@ -2919,7 +2891,6 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
         if (outputSlots != null && outputSlots.length > 0) {
             // 从输出槽抽取
             extractFromOutputSlots(sourceMenu, outputSlots, data, pairIndex, destBlock);
-            return;
         }
 
         // 方法2：如果没有明确的输出槽，尝试所有槽位（除了特定类型槽位）
@@ -3142,7 +3113,7 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
                         ColorGradient.getGradientName("点我展开运输总览")),
                 (player, slot, itemStack, clickAction) -> {
 
-                    openTransportOverviewMenu(player, b);; // 默认打开第一页
+                    openTransportOverviewMenu(player, b);// 默认打开第一页
                     return false; // 不消耗物品或默认行为
                 });
         int totalPages = Math.max(1, (MAX_INPUT_BIND_PAIRS + INPUT_PAIRS_PER_PAGE - 1) / INPUT_PAIRS_PER_PAGE);
@@ -3433,8 +3404,8 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
     private final int[] arrowSlot2Step = {45,48, 50,53};
     private final int[] pinkGlassPane2Step = {4,13,22,31,40,49, 46,47, 51,52};
     // 传输菜单页码变量
-    private int transportOutputPage = 0;
-    private int transportInputPage = 0;
+    private int transportOutputPage;
+    private int transportInputPage;
 
     /**
      * 打开传输总览菜单
@@ -3514,8 +3485,8 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
 
             if (pairIndex >= MAX_BIND_PAIRS) {
                 // 超出范围，显示空位
-                int coordSlot = transportSlotsStep[i * 2];
-                int templateSlot = transportSlotsStep[i * 2 + 1];
+                int coordSlot = transportSlotsStep[(i << 1)];
+                int templateSlot = transportSlotsStep[(i << 1) + 1];
 
                 menu.addItem(coordSlot, new CustomItemStack(Material.GRAY_STAINED_GLASS_PANE, "§7空位"),
                         (p, s, item, action) -> false);
@@ -3525,11 +3496,11 @@ public class CargoCoreMore extends SlimefunItem implements EnergyNetComponent{
             }
 
             // 坐标槽位（每个组的第一个槽）
-            int coordSlot = transportSlotsStep[i * 2];
+            int coordSlot = transportSlotsStep[(i << 1)];
             setupOutputCoordSlot(menu, b, pairIndex, coordSlot);
 
             // 模板槽位（每个组的第二个槽）
-            int templateSlot = transportSlotsStep[i * 2 + 1];
+            int templateSlot = transportSlotsStep[(i << 1) + 1];
             setupOutputTemplateSlot(menu, b, pairIndex, templateSlot);
         }
     }

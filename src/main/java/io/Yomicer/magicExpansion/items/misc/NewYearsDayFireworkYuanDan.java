@@ -7,7 +7,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -55,7 +54,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
             Location playerLoc = player.getLocation();
             World world = player.getWorld();
 
-            if (!e.getClickedBlock().isEmpty()){
+            if (e.getClickedBlock().isPresent()){
                 ItemStack itemInHand = player.getInventory().getItemInMainHand();
                 // 检查玩家手上是否有物品
                 if (e.getHand()!= HAND) {
@@ -142,7 +141,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
         World world = location.getWorld();
 
         new BukkitRunnable() {
-            int tick = 0;
+            int tick;
 
             @Override
             public void run() {
@@ -337,7 +336,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
 
                     List<Color> colors = new ArrayList<>();
                     for (int j = 0; j < 4; j++) {
-                        colors.add(NEW_YEAR_COLORS[(index * 2 + j) % NEW_YEAR_COLORS.length]);
+                        colors.add(NEW_YEAR_COLORS[((index << 1) + j) % NEW_YEAR_COLORS.length]);
                     }
 
                     meta.addEffect(FireworkEffect.builder()
@@ -370,7 +369,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
 
     private void createPowerfulTrail(Firework firework) {
         new BukkitRunnable() {
-            int tick = 0;
+            int tick;
 
             @Override
             public void run() {
@@ -434,7 +433,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
 
     private void createSuperTrail(Firework firework) {
         new BukkitRunnable() {
-            int tick = 0;
+            int tick;
 
             @Override
             public void run() {
@@ -515,7 +514,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
                     world.playSound(center, Sound.ENTITY_FIREWORK_ROCKET_BLAST,
                             2.0f, 0.6f + currentLayer * 0.05f);
                 }
-            }.runTaskLater(MagicExpansion.getInstance(), layer * 2L);
+            }.runTaskLater(MagicExpansion.getInstance(), layer << 1);
         }
 
         // 最终数字效果
@@ -641,7 +640,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
 
                         // 垂直冲击波层
                         for (int h = -3; h <= 3; h++) {
-                            Location verticalWave = waveLoc.clone().add(0, h * 2, 0);
+                            Location verticalWave = waveLoc.clone().add(0, h << 1, 0);
                             world.spawnParticle(Particle.REDSTONE, verticalWave, 1,
                                     new Particle.DustOptions(color, 2.0f));
                         }
@@ -877,7 +876,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
                         world.playSound(digitLoc, Sound.BLOCK_NOTE_BLOCK_BIT, 0.3f, 1.8f);
                     }
                 }
-            }.runTaskLater(MagicExpansion.getInstance(), i * 2L);
+            }.runTaskLater(MagicExpansion.getInstance(), i << 1);
         }
 
         // 文字闪烁
@@ -907,7 +906,7 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
                                 world.playSound(center, Sound.BLOCK_NOTE_BLOCK_PLING, 1.0f, 0.9f);
                             }
                         }
-                    }.runTaskLater(MagicExpansion.getInstance(), blink * 8L);
+                    }.runTaskLater(MagicExpansion.getInstance(), blink << 3);
                 }
             }
         }.runTaskLater(MagicExpansion.getInstance(), 30L);
@@ -925,34 +924,30 @@ public class NewYearsDayFireworkYuanDan extends SimpleSlimefunItem<ItemUseHandle
     }
 
     private int[][] getNumberPattern(char digit) {
-        switch (digit) {
-            case '2':
-                return new int[][]{
-                        {0,0,0},{1,0,0},{2,0,0},{3,0,0},{4,0,0},
-                        {4,1,0},{4,2,0},{4,3,0},
-                        {3,3,0},{2,3,0},{1,3,0},{0,3,0},
-                        {0,4,0},{0,5,0},{0,6,0},
-                        {1,6,0},{2,6,0},{3,6,0},{4,6,0}
-                };
-            case '0':
-                return new int[][]{
-                        {0,0,0},{1,0,0},{2,0,0},{3,0,0},{4,0,0},
-                        {0,1,0},{4,1,0},{0,2,0},{4,2,0},
-                        {0,3,0},{4,3,0},{0,4,0},{4,4,0},
-                        {0,5,0},{4,5,0},{0,6,0},{4,6,0},
-                        {0,6,0},{1,6,0},{2,6,0},{3,6,0},{4,6,0}
-                };
-            case '6':
-                return new int[][]{
-                        {2,0,0},{3,0,0},{4,0,0},
-                        {1,1,0},{0,2,0},
-                        {0,3,0},{1,3,0},{2,3,0},{3,3,0},{4,3,0},
-                        {0,4,0},{4,4,0},{0,5,0},{4,5,0},
-                        {0,6,0},{1,6,0},{2,6,0},{3,6,0},{4,6,0}
-                };
-            default:
-                return new int[][]{{0,0,0}};
-        }
+        return switch (digit) {
+            case '2' -> new int[][]{
+                    {0, 0, 0}, {1, 0, 0}, {2, 0, 0}, {3, 0, 0}, {4, 0, 0},
+                    {4, 1, 0}, {4, 2, 0}, {4, 3, 0},
+                    {3, 3, 0}, {2, 3, 0}, {1, 3, 0}, {0, 3, 0},
+                    {0, 4, 0}, {0, 5, 0}, {0, 6, 0},
+                    {1, 6, 0}, {2, 6, 0}, {3, 6, 0}, {4, 6, 0}
+            };
+            case '0' -> new int[][]{
+                    {0, 0, 0}, {1, 0, 0}, {2, 0, 0}, {3, 0, 0}, {4, 0, 0},
+                    {0, 1, 0}, {4, 1, 0}, {0, 2, 0}, {4, 2, 0},
+                    {0, 3, 0}, {4, 3, 0}, {0, 4, 0}, {4, 4, 0},
+                    {0, 5, 0}, {4, 5, 0}, {0, 6, 0}, {4, 6, 0},
+                    {0, 6, 0}, {1, 6, 0}, {2, 6, 0}, {3, 6, 0}, {4, 6, 0}
+            };
+            case '6' -> new int[][]{
+                    {2, 0, 0}, {3, 0, 0}, {4, 0, 0},
+                    {1, 1, 0}, {0, 2, 0},
+                    {0, 3, 0}, {1, 3, 0}, {2, 3, 0}, {3, 3, 0}, {4, 3, 0},
+                    {0, 4, 0}, {4, 4, 0}, {0, 5, 0}, {4, 5, 0},
+                    {0, 6, 0}, {1, 6, 0}, {2, 6, 0}, {3, 6, 0}, {4, 6, 0}
+            };
+            default -> new int[][]{{0, 0, 0}};
+        };
     }
 
     private Color getRainbowColor(double position) {

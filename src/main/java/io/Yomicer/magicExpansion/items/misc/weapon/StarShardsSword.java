@@ -9,7 +9,6 @@ import io.github.thebusybiscuit.slimefun4.core.attributes.RecipeDisplayItem;
 import io.github.thebusybiscuit.slimefun4.core.handlers.ItemUseHandler;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -24,7 +23,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -161,8 +159,7 @@ public class StarShardsSword extends SimpleSlimefunItem<ItemUseHandler> implemen
     private static final Set<UUID> holyProtectedPlayers = ConcurrentHashMap.newKeySet();
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
-        if (!(event.getEntity() instanceof Player)) return;
-        Player p = (Player) event.getEntity();
+        if (!(event.getEntity() instanceof Player p)) return;
         if (holyProtectedPlayers.contains(p.getUniqueId())) {
             event.setCancelled(true);
             if (event.getCause() != EntityDamageEvent.DamageCause.VOID) {
@@ -258,7 +255,7 @@ public class StarShardsSword extends SimpleSlimefunItem<ItemUseHandler> implemen
         Vector playerForward = player.getEyeLocation().getDirection().normalize();
         Location playerOrigin = player.getEyeLocation();
 
-        double coneAngleCos = Math.cos(Math.toRadians(25)); // ±25度锥形
+        double coneAngleCos = Math.cos(0.4363323129985824); // ±25度锥形
         List<LivingEntity> targets = new ArrayList<>();
 
         for (LivingEntity entity : player.getWorld().getNearbyLivingEntities(playerOrigin, 8.0)) {
@@ -280,9 +277,7 @@ public class StarShardsSword extends SimpleSlimefunItem<ItemUseHandler> implemen
 
         // 🎵 音效：魔法释放 + 冲击波
         player.getWorld().playSound(origin, Sound.ENTITY_ELDER_GUARDIAN_CURSE, 1.0f, 0.7f);
-        Bukkit.getScheduler().runTaskLater(getAddon().getJavaPlugin(), () -> {
-            player.getWorld().playSound(origin, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.8f);
-        }, 2L);
+        Bukkit.getScheduler().runTaskLater(getAddon().getJavaPlugin(), () -> player.getWorld().playSound(origin, Sound.BLOCK_BEACON_ACTIVATE, 1.0f, 1.8f), 2L);
 
         // ✨ 粒子：沿方向发射光束 + 命中闪光
         for (int i = 1; i <= 20; i++) {

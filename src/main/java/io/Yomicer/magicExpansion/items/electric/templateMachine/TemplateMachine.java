@@ -69,7 +69,7 @@ public class TemplateMachine extends AbstractElectricRecipeMachine {
                 // 添加输入物品
                 if (i < inputs.length) {
                     if (i == 0) {
-                        display.add(addLore(inputs[i], "§e§l☞此配方运行时不消耗该物品☜"));
+                        display.add(addLore(inputs[0], "§e§l☞此配方运行时不消耗该物品☜"));
                     } else {
                         display.add(addLore(inputs[i], "§7生产时间: §e" + productionTime + " 秒"));
                     }

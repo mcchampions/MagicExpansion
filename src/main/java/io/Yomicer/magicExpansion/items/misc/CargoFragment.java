@@ -207,9 +207,7 @@ public class CargoFragment extends SimpleSlimefunItem<ItemUseHandler> implements
 
                 String input = event.getMessage().trim();
 
-                Bukkit.getScheduler().runTask(MagicExpansion.getInstance(), () -> {
-                    processTransferInput(player, transfer, input);
-                });
+                Bukkit.getScheduler().runTask(MagicExpansion.getInstance(), () -> processTransferInput(player, transfer, input));
             }
 
             @EventHandler
@@ -228,7 +226,7 @@ public class CargoFragment extends SimpleSlimefunItem<ItemUseHandler> implements
     private void processTransferInput(Player player, FragmentTransfer transfer, String input) {
         try {
             // 处理取消
-            if (input.equalsIgnoreCase("cancel")) {
+            if ("cancel".equalsIgnoreCase(input)) {
                 player.sendMessage(ChatColor.YELLOW + "已取消转移操作。");
                 pendingTransfers.remove(player.getUniqueId());
                 cleanupListenerIfNeeded();
@@ -246,7 +244,7 @@ public class CargoFragment extends SimpleSlimefunItem<ItemUseHandler> implements
             int transferAmount;
 
             // 处理"all"
-            if (input.equalsIgnoreCase("all")) {
+            if ("all".equalsIgnoreCase(input)) {
                 transferAmount = (int) transfer.maxTransfer;
             } else {
                 // 解析数字

@@ -2,6 +2,7 @@ package io.Yomicer.magicExpansion.utils.CustomHeadUtils;
 
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -9,6 +10,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 
 import java.net.URL;
 
+@Getter
 public enum CustomHead {
     MAGICSOLO("8adb25ab9976d89d0bd8118d72c1c06bb907060c1e02a729b652d1e86b1ebbbc"),
     BOT_PINK("c4d257ab13a12b18f9561eb3dc41b92b50d4ad4c91059d4400bee41602527488"),
@@ -41,11 +43,7 @@ public enum CustomHead {
 
 
 
-    private ItemStack item;
-    public ItemStack getItem() {
-
-        return item;
-    }
+    private final ItemStack item;
 
     CustomHead(String hashcode){
         item= new CustomItemStack(SlimefunUtils.getCustomHead(hashcode));

@@ -131,8 +131,8 @@ public class BigFireworksYuanDan extends SimpleSlimefunItem<ItemUseHandler> impl
 
     private void createTrail(Location start, Location end, World world) {
         new BukkitRunnable() {
-            double progress = 0;
-            Location current = start.clone();
+            double progress;
+            final Location current = start.clone();
 
             @Override
             public void run() {
@@ -198,7 +198,7 @@ public class BigFireworksYuanDan extends SimpleSlimefunItem<ItemUseHandler> impl
                 public void run() {
                     createExplosionRing(center, world, radius, Particle.CLOUD, 100);
                 }
-            }.runTaskLater(MagicExpansion.getInstance(), r * 2L);
+            }.runTaskLater(MagicExpansion.getInstance(), r << 1);
         }
     }
 
@@ -225,7 +225,7 @@ public class BigFireworksYuanDan extends SimpleSlimefunItem<ItemUseHandler> impl
 
                         // 向上喷射粒子
                         for (int h = 0; h < 3; h++) {
-                            Location loc = particleLoc.clone().add(0, h * 2, 0);
+                            Location loc = particleLoc.clone().add(0, h << 1, 0);
                             Particle.DustOptions dustOptions = new Particle.DustOptions(color, 3.0f);
                             world.spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0, dustOptions);
                         }
@@ -241,7 +241,7 @@ public class BigFireworksYuanDan extends SimpleSlimefunItem<ItemUseHandler> impl
 
                         // 向下喷射粒子
                         for (int h = 0; h < 3; h++) {
-                            Location loc = particleLoc.clone().add(0, -h * 2, 0);
+                            Location loc = particleLoc.clone().add(0, -h << 1, 0);
                             Particle.DustOptions dustOptions = new Particle.DustOptions(color, 3.0f);
                             world.spawnParticle(Particle.REDSTONE, loc, 1, 0, 0, 0, 0, dustOptions);
                         }
@@ -280,8 +280,8 @@ public class BigFireworksYuanDan extends SimpleSlimefunItem<ItemUseHandler> impl
 
     private void createMeteorTrail(Location start, Location target, World world, Particle.DustOptions dustOptions) {
         new BukkitRunnable() {
-            double progress = 0;
-            Location current = start.clone();
+            double progress;
+            final Location current = start.clone();
 
             @Override
             public void run() {
@@ -350,7 +350,7 @@ public class BigFireworksYuanDan extends SimpleSlimefunItem<ItemUseHandler> impl
 
             if (particle == Particle.REDSTONE && color != null) {
                 Particle.DustOptions dustOptions = new Particle.DustOptions(color, 2.0f);
-                world.spawnParticle(particle, particleLoc, 1, 0, 0, 0, 0, dustOptions);
+                world.spawnParticle(Particle.REDSTONE, particleLoc, 1, 0, 0, 0, 0, dustOptions);
             } else {
                 world.spawnParticle(particle, particleLoc, 1, 0, 0, 0, 0);
             }

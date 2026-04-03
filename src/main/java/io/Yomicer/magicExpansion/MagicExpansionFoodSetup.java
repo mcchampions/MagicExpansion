@@ -5,7 +5,6 @@ import io.Yomicer.magicExpansion.items.misc.food.CloudBread;
 import io.Yomicer.magicExpansion.items.misc.food.FarmHavestBread;
 import io.Yomicer.magicExpansion.items.misc.food.HolyPie;
 import io.Yomicer.magicExpansion.utils.ColorGradient;
-import io.Yomicer.magicExpansion.utils.itemUtils.sfItemUtils;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
 import io.github.thebusybiscuit.slimefun4.implementation.items.blocks.UnplaceableBlock;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;

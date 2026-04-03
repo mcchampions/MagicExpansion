@@ -9,8 +9,6 @@ import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.ItemUtils;
 import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.AContainer;
-import me.mrCookieSlime.Slimefun.Objects.SlimefunItem.abstractItems.MachineRecipe;
 import me.mrCookieSlime.Slimefun.api.inventory.BlockMenu;
 import me.mrCookieSlime.Slimefun.api.inventory.DirtyChestMenu;
 import net.guizhanss.guizhanlib.minecraft.helper.inventory.ItemStackHelper;
@@ -552,7 +550,7 @@ public class QuickMachineUtilsMBVersion {
                     resultItemClone.setAmount(totalOutput);
 
                     // 调用 pushItem 方法，尝试将物品放入槽位
-                    ItemStack remainingItems = pushItemRe(resultItemClone, outputSlots,menu);;
+                    ItemStack remainingItems = pushItemRe(resultItemClone, outputSlots,menu);
 
                     // 检查是否有未放置的物品
                     if (remainingItems != null && remainingItems.getAmount() > 0) {
@@ -582,7 +580,7 @@ public class QuickMachineUtilsMBVersion {
                     resultItemClone.setAmount(totalOutput);
 
                     // 调用 pushItem 方法，尝试将物品放入槽位
-                    ItemStack remainingItems = pushItemRe(resultItemClone, outputSlots,menu);;
+                    ItemStack remainingItems = pushItemRe(resultItemClone, outputSlots,menu);
 
                     // 检查是否有未放置的物品
                     if (remainingItems != null && remainingItems.getAmount() > 0) {

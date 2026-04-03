@@ -1,6 +1,5 @@
 package io.Yomicer.magicExpansion.items.misc;
 
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 

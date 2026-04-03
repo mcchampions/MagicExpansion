@@ -1,15 +1,20 @@
 package io.Yomicer.magicExpansion.items.misc.magicAlter;
 
 import io.Yomicer.magicExpansion.MagicExpansion;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 
 public class PluginInitializer {
 
     private final MagicExpansion plugin;
+    @Getter
     private MagicAltarManager altarManager;
+    @Getter
     private RecipeBookManager recipeBookManager;
+    @Getter
     private NamespacedKey altarWandKey;
+    @Getter
     private NamespacedKey recipeBookKey;
 
     public PluginInitializer(MagicExpansion plugin) {
@@ -37,19 +42,4 @@ public class PluginInitializer {
         altarManager.loadRecipes();
     }
 
-    public MagicAltarManager getAltarManager() {
-        return altarManager;
-    }
-
-    public RecipeBookManager getRecipeBookManager() {
-        return recipeBookManager;
-    }
-
-    public NamespacedKey getAltarWandKey() {
-        return altarWandKey;
-    }
-
-    public NamespacedKey getRecipeBookKey() {
-        return recipeBookKey;
-    }
 }

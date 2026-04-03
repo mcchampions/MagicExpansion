@@ -80,7 +80,7 @@ public class RSCMagicMiner extends AContainer implements RecipeDisplayItem , Hol
     public RSCMagicMiner(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {
         super(itemGroup, item, recipeType, recipe);
 
-        processor.setProgressBar(getProgressBar());
+        processor.setProgressBar(PROGRESS_ITEM);
 
 //        redstone = Slimefun.getRegistry()
 //                .getGEOResources()
@@ -120,13 +120,9 @@ public class RSCMagicMiner extends AContainer implements RecipeDisplayItem , Hol
 
             @Override
             public boolean canOpen(Block b, Player p) {
-                if (!(p.hasPermission("slimefun.inventory.bypass")
-                        || Slimefun.getProtectionManager()
-                        .hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK))) {
-                    return false;
-                }
-
-                return true;
+                return p.hasPermission("slimefun.inventory.bypass")
+                       || Slimefun.getProtectionManager()
+                               .hasPermission(p, b.getLocation(), Interaction.INTERACT_BLOCK);
             }
 
             @Override

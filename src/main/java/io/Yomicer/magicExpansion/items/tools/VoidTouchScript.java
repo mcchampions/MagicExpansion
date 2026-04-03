@@ -25,8 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.Yomicer.magicExpansion.utils.ItemPermissionUtils.hasPermissionRe;
-
 public class VoidTouchScript extends SimpleSlimefunItem<ItemUseHandler> implements NotPlaceable {
 
     public VoidTouchScript(ItemGroup itemGroup, SlimefunItemStack item, RecipeType recipeType, ItemStack[] recipe) {

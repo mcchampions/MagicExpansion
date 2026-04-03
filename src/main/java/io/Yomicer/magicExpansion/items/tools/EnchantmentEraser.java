@@ -225,8 +225,8 @@ public class EnchantmentEraser extends SimpleSlimefunItem<ItemUseHandler> {
                     // 检查后面是否都是正确的格式
                     boolean validHexColor = true;
                     for (int i = 0; i < 6; i++) {
-                        if (result.charAt(index + 2 + i*2) != '§' ||
-                                !isHexDigit(result.charAt(index + 3 + i*2))) {
+                        if (result.charAt(index + 2 + (i << 1)) != '§' ||
+                            !isHexDigit(result.charAt(index + 3 + (i << 1)))) {
                             validHexColor = false;
                             break;
                         }

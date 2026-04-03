@@ -2,7 +2,6 @@ package io.Yomicer.magicExpansion.Listener.magicItemEffectManager;
 
 import io.Yomicer.magicExpansion.utils.GiveItem;
 import io.Yomicer.magicExpansion.utils.entity.EntityEgg;
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import net.guizhanss.guizhanlib.minecraft.helper.entity.EntityHelper;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -28,8 +27,7 @@ public class ItemEffectKillListener implements Listener {
         Entity killer = event.getEntity().getKiller();
 
         // 检查杀手是否是玩家
-        if (killer instanceof Player) {
-            Player player = (Player) killer;
+        if (killer instanceof Player player) {
             ItemStack item = player.getInventory().getItemInMainHand().clone();
             // 获取被击杀的实体
             LivingEntity entity = event.getEntity();
@@ -57,35 +55,31 @@ public class ItemEffectKillListener implements Listener {
 
 
     private void applyEffect(String attribute, Object value, Entity target, Player player, ItemStack item) {
-        switch (attribute) {
-            case "MagicExpansion.EntitySpawn": // 击退效果
-                if (value instanceof Integer EntitySpawn) {
+        if (attribute.equals("MagicExpansion.EntitySpawn")) { // 击退效果
+            if (value instanceof Integer EntitySpawn) {
 
-                    EntityType entityType = target.getType();
+                EntityType entityType = target.getType();
 
-                    Material spawnEggMaterial = EntityEgg.hasSpawnEgg(entityType);
+                Material spawnEggMaterial = EntityEgg.hasSpawnEgg(entityType);
 
-                    if (spawnEggMaterial != null) {
+                if (spawnEggMaterial != null) {
 
-                        Random random = new Random();
-                        double eggRandom = EntitySpawn * 0.05 * 0.01;
-                        double randomValue = random.nextDouble(); // 生成一个 [0, 1) 的随机数
+                    Random random = new Random();
+                    double eggRandom = EntitySpawn * 0.05 * 0.01;
+                    double randomValue = random.nextDouble(); // 生成一个 [0, 1) 的随机数
 
-                        if(eggRandom>randomValue) {
-                            // 创建刷怪蛋物品
-                            ItemStack spawnEgg = new ItemStack(spawnEggMaterial);
-                            // 打印信息到控制台或发送消息给玩家
-                            player.sendMessage("§b在0.00001秒前，你击杀了 §d" + EntityHelper.getName(target));
-                            player.sendMessage("§b你的武器 §e[" + item.getItemMeta().getDisplayName() + "§e] §b对 §d"+ EntityHelper.getName(target) +" §b进行了§c生命重构");
-                            player.sendMessage("§b你获得了 §e" + EntityHelper.getName(target) + " §b生物蛋");
+                    if (eggRandom > randomValue) {
+                        // 创建刷怪蛋物品
+                        ItemStack spawnEgg = new ItemStack(spawnEggMaterial);
+                        // 打印信息到控制台或发送消息给玩家
+                        player.sendMessage("§b在0.00001秒前，你击杀了 §d" + EntityHelper.getName(target));
+                        player.sendMessage("§b你的武器 §e[" + item.getItemMeta().getDisplayName() + "§e] §b对 §d" + EntityHelper.getName(target) + " §b进行了§c生命重构");
+                        player.sendMessage("§b你获得了 §e" + EntityHelper.getName(target) + " §b生物蛋");
 
-                            GiveItem.giveOrDropItem(player, spawnEgg);
-                        }
+                        GiveItem.giveOrDropItem(player, spawnEgg);
                     }
                 }
-                break;
-
-
+            }
         }
 
 

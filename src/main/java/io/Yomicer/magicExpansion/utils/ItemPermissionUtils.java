@@ -45,14 +45,11 @@ public class ItemPermissionUtils {
         }
 
         // 检查保护插件的权限（如 WorldGuard）
-        if (Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.ATTACK_PLAYER)&&
-                Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.ATTACK_ENTITY)&&
-                Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.INTERACT_BLOCK)&&
-                Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.BREAK_BLOCK)&&
-                Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.PLACE_BLOCK)) {
-            return true;
-        }
-        return false;
+        return Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.ATTACK_PLAYER) &&
+               Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.ATTACK_ENTITY) &&
+               Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.INTERACT_BLOCK) &&
+               Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.BREAK_BLOCK) &&
+               Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.PLACE_BLOCK);
     }
 
     public static boolean hasPermissionOnlyOnAttackEntity(Player player) {
@@ -61,10 +58,7 @@ public class ItemPermissionUtils {
             return true;
         }
         // 检查保护插件的权限（如 WorldGuard）
-        if (Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.ATTACK_ENTITY)) {
-            return true;
-        }
-        return false;
+        return Slimefun.getProtectionManager().hasPermission(player, player.getLocation(), Interaction.ATTACK_ENTITY);
     }
 
 
@@ -81,14 +75,10 @@ public class ItemPermissionUtils {
         }
 
         // 检查保护插件的权限（如 WorldGuard）
-        if (Slimefun.getProtectionManager().hasPermission(player, l, Interaction.INTERACT_BLOCK)&&
-                Slimefun.getProtectionManager().hasPermission(player, l, Interaction.BREAK_BLOCK)&&
-                Slimefun.getProtectionManager().hasPermission(player, l, Interaction.PLACE_BLOCK)) {
-            return true;
-        }
+        return Slimefun.getProtectionManager().hasPermission(player, l, Interaction.INTERACT_BLOCK) &&
+               Slimefun.getProtectionManager().hasPermission(player, l, Interaction.BREAK_BLOCK) &&
+               Slimefun.getProtectionManager().hasPermission(player, l, Interaction.PLACE_BLOCK);
 //        player.sendMessage(getGradientName("[魔法]你没有权限进行此操作~"));
-
-        return false;
     }
 
 

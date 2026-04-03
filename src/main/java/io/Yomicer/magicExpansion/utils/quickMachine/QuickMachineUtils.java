@@ -355,9 +355,7 @@ public class QuickMachineUtils {
                         "§e左键 §b点击菜单内的物品,制作一次",
                         "§b按住 §eShift 右键 §b点击菜单内的物品，可以一次制作32个物品",
                         "§b按住 §eShift 左键 §b点击菜单内的物品，制作所有可制作的物品"),
-                (player1, slot, item, action) -> {
-                    return false;
-                });
+                (player1, slot, item, action) -> false);
 
         // 筛选出玩家可以制作的配方
         List<Map<String, Integer>> availableRecipes = ReceivedRecipes.stream()

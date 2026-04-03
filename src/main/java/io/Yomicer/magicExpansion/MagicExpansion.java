@@ -14,7 +14,6 @@ import io.Yomicer.magicExpansion.Listener.worldListener.Events;
 import io.Yomicer.magicExpansion.items.misc.CargoFragmentDistributor;
 import io.Yomicer.magicExpansion.items.misc.DrawMachine;
 import io.Yomicer.magicExpansion.items.misc.magicAlter.PluginInitializer;
-import io.Yomicer.magicExpansion.specialActions.Command.AIChat;
 import io.Yomicer.magicExpansion.specialActions.Command.FishingGuideCommand;
 import io.Yomicer.magicExpansion.specialActions.Command.MagicExpansionCommand;
 import io.Yomicer.magicExpansion.Listener.magicItemEffectManager.ItemEffectKillListener;
@@ -23,6 +22,7 @@ import io.Yomicer.magicExpansion.utils.Language;
 import io.Yomicer.magicExpansion.utils.aiManager.AIManager;
 import io.github.thebusybiscuit.slimefun4.api.SlimefunAddon;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.config.Config;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import net.guizhanss.guizhanlibplugin.updater.GuizhanUpdater;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -34,12 +34,14 @@ import java.util.logging.Level;
 import static io.Yomicer.magicExpansion.items.misc.PortableCargoTransporter.onPluginDisable;
 
 public class MagicExpansion extends JavaPlugin implements SlimefunAddon {
-    public static boolean testmod=false;
-    public static boolean clearConfig=false;
+    public static boolean testmod;
+    public static boolean clearConfig;
     public static boolean testmode(){
         return testmod;
     }
+    @Getter
     private static MagicExpansion instance;
+    @Getter
     private PluginInitializer pluginInitializer;
 
 
@@ -92,7 +94,6 @@ public class MagicExpansion extends JavaPlugin implements SlimefunAddon {
         // 创建并启用 AI 子模块
         AIManager aiManager = new AIManager(this);
         aiManager.onEnable();  // ✅ 启动 AI 模块
-        getLogger().info("✅ 魔法2.0 ai聊天功能加载完毕！使用 /mxai chaton 开启AI聊天。");
 
 
         // Registering Command
@@ -100,7 +101,6 @@ public class MagicExpansion extends JavaPlugin implements SlimefunAddon {
         this.getCommand("mxw").setExecutor(new WorldCommand(this));
         this.getCommand("mxf").setExecutor(new FishingGuideCommand());
         this.getCommand("mxf").setTabCompleter(new FishingGuideCommand());
-        this.getCommand("mxai").setExecutor(new AIChat(aiManager));
 //        this.getCommand("mxai").setTabCompleter(new AIChat());
 
         // 创建地图保存目录
@@ -122,7 +122,6 @@ public class MagicExpansion extends JavaPlugin implements SlimefunAddon {
         getServer().getPluginManager().registerEvents(new PlayerFishingListener(), this);
         getServer().getPluginManager().registerEvents(new Events(), this);
         getServer().getPluginManager().registerEvents(new ItemFrameListener(), this);
-        getServer().getPluginManager().registerEvents(aiManager, this);
         getLogger().info("§b监听注册完毕！");
 
 
@@ -172,9 +171,7 @@ public class MagicExpansion extends JavaPlugin implements SlimefunAddon {
         // Plugin shutdown logic
         getLogger().info("§b魔法拓展已成功卸载！");
     }
-    public PluginInitializer getPluginInitializer() {
-        return pluginInitializer;
-    }
+
     @Nonnull
     @Override
     public JavaPlugin getJavaPlugin() {
@@ -187,7 +184,4 @@ public class MagicExpansion extends JavaPlugin implements SlimefunAddon {
         return "";
     }
 
-    public static MagicExpansion getInstance() {
-        return instance;
-    }
 }

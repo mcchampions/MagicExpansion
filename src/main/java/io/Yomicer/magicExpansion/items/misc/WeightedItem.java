@@ -1,7 +1,9 @@
 package io.Yomicer.magicExpansion.items.misc;
 
+import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
+@Getter
 public class WeightedItem {
 
     private final ItemStack item;
@@ -12,6 +14,4 @@ public class WeightedItem {
         this.weight = weight;
     }
 
-    public ItemStack getItem() { return item; }
-    public int getWeight() { return weight; }
 }

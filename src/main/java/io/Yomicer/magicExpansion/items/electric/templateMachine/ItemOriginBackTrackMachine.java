@@ -5,10 +5,8 @@ import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
 import io.github.thebusybiscuit.slimefun4.api.recipes.RecipeType;
-import io.github.thebusybiscuit.slimefun4.libraries.dough.inventory.InvUtils;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.utils.ChestMenuUtils;
-import io.github.thebusybiscuit.slimefun4.utils.SlimefunUtils;
 import io.github.thebusybiscuit.slimefun4.utils.itemstack.ItemStackWrapper;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
@@ -68,7 +66,7 @@ public class ItemOriginBackTrackMachine extends AbstractElectricRecipeMachine {
                 // 添加输入物品
                 if (i < inputs.length) {
                     if (i == 0) {
-                        display.add(addLore(inputs[i], "§e§l☞魔法溯源机运行时不消耗任何材料☜"));
+                        display.add(addLore(inputs[0], "§e§l☞魔法溯源机运行时不消耗任何材料☜"));
                     } else {
                         display.add(addLore(inputs[i], "§7生产时间: §e" + productionTime + " 秒"));
                     }

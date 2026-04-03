@@ -303,8 +303,7 @@ public class QuickMachineMBUtile {
                     ItemStack[] output = machineRecipe.getOutput(); // 获取输出物品数组
 
                     // 将输入和输出合并为一个完整的配方 Map
-                    Map<String, Integer> recipeMap = new LinkedHashMap<>();
-                    recipeMap.putAll(convertRecipeToMap(input)); // 输入部分
+                    Map<String, Integer> recipeMap = new LinkedHashMap<>(convertRecipeToMap(input)); // 输入部分
 
                     // 检查目标配方是否完全匹配当前配方
                     boolean isMatch = targetRecipe.equals(recipeMap);

@@ -63,9 +63,7 @@ public class ItemNameTag extends SimpleSlimefunItem<ItemUseHandler> implements L
                 renameStartTime.put(uuid, System.currentTimeMillis()); // 记录开始时间
 
                 // 60秒后自动清理（可选，防止内存泄漏）
-                Bukkit.getScheduler().runTaskLater(MagicExpansion.getInstance(), () -> {
-                    renameStartTime.remove(uuid);
-                }, 20 * 60);
+                Bukkit.getScheduler().runTaskLater(MagicExpansion.getInstance(), () -> renameStartTime.remove(uuid), 20 * 60);
             } else {
                 // === 普通右键：直接复制主手 displayName 到副手 ===
                 ItemStack nameTag = player.getInventory().getItemInMainHand();

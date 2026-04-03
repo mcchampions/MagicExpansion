@@ -3,7 +3,6 @@ import com.xzavier0722.mc.plugin.slimefun4.storage.controller.SlimefunBlockData;
 import com.xzavier0722.mc.plugin.slimefun4.storage.util.StorageCacheUtils;
 import io.Yomicer.magicExpansion.utils.ColorGradient;
 import io.Yomicer.magicExpansion.utils.itemUtils.newItem;
-import io.Yomicer.magicExpansion.utils.log.Debug;
 import io.github.thebusybiscuit.slimefun4.api.items.ItemGroup;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItem;
 import io.github.thebusybiscuit.slimefun4.api.items.SlimefunItemStack;
@@ -16,6 +15,7 @@ import io.github.thebusybiscuit.slimefun4.implementation.Slimefun;
 import io.github.thebusybiscuit.slimefun4.implementation.items.SimpleSlimefunItem;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.items.CustomItemStack;
 import io.github.thebusybiscuit.slimefun4.libraries.dough.protection.Interaction;
+import lombok.Getter;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ChestMenu;
 import me.mrCookieSlime.CSCoreLibPlugin.general.Inventory.ClickAction;
 import me.mrCookieSlime.Slimefun.Objects.handlers.BlockTicker;
@@ -51,6 +51,7 @@ public class EnchantingTable extends SimpleSlimefunItem<ItemUseHandler> implemen
     private final int[] iiBorder = {14};
     public static final int ENERGY_CONSUMPTION = 10000;
     public static final int CAPACITY = 8888888;
+    @Getter
     private final int[] inputSlots = {3,5};
     private final int weaponSlot = 3;
     private final int resourceSlot = 5;
@@ -151,7 +152,7 @@ public class EnchantingTable extends SimpleSlimefunItem<ItemUseHandler> implemen
         BlockMenu menu = StorageCacheUtils.getMenu(block.getLocation());
 
         if(menu != null && menu.hasViewer()) {
-            if (getCharge(block.getLocation()) < getEnergyConsumption()) {
+            if (getCharge(block.getLocation()) < ENERGY_CONSUMPTION) {
                 menu.addItem(18, new CustomItemStack(doGlow(Material.NETHER_STAR), "§x§F§D§B§7§D§4⚡电力不足⚡",
                                 getGradientName("每次赋能需要消耗1w电力")),
                         (player1, slot, item, action) -> false);
@@ -179,10 +180,10 @@ public class EnchantingTable extends SimpleSlimefunItem<ItemUseHandler> implemen
         if(num == 1){
         }
         else if(num == 2){
-            minAttributes = num;
+            minAttributes = 2;
             maxAttributes = num + 1;
         }else if(num == 3){
-            minAttributes = num;
+            minAttributes = 3;
             maxAttributes = num + 2;
         }
         Random random = new Random();
@@ -417,9 +418,7 @@ public class EnchantingTable extends SimpleSlimefunItem<ItemUseHandler> implemen
                             getGradientName("目前支持："),
                             getGradientName("星辰铁"),
                             getGradientName("品质越高的材料赋能效果越好")),
-                    (player1, slot, item, action) -> {
-                        return false;
-                    });
+                    (player1, slot, item, action) -> false);
             process = false;
         }else{
             menu.addItem(44, new CustomItemStack(doGlow(Material.PINK_STAINED_GLASS_PANE),""),
@@ -479,7 +478,7 @@ public class EnchantingTable extends SimpleSlimefunItem<ItemUseHandler> implemen
                         if(resourceItem.getAmount()<1){
                             return false;
                         }
-                        removeCharge(block.getLocation(), getEnergyConsumption());
+                        removeCharge(block.getLocation(), ENERGY_CONSUMPTION);
                         craftI1(output, menu);
                         return false;
                     });
@@ -508,7 +507,7 @@ public class EnchantingTable extends SimpleSlimefunItem<ItemUseHandler> implemen
                     if(resourceItem.getAmount()<2){
                         return false;
                     }
-                    removeCharge(block.getLocation(), getEnergyConsumption());
+                    removeCharge(block.getLocation(), ENERGY_CONSUMPTION);
                     craftI2(output, menu);
                     return false;
                 });
@@ -537,7 +536,7 @@ public class EnchantingTable extends SimpleSlimefunItem<ItemUseHandler> implemen
                     if(resourceItem.getAmount()<3){
                         return false;
                     }
-                    removeCharge(block.getLocation(), getEnergyConsumption());
+                    removeCharge(block.getLocation(), ENERGY_CONSUMPTION);
                     craftI3(output, menu);
                     return false;
                 });
@@ -655,10 +654,6 @@ public class EnchantingTable extends SimpleSlimefunItem<ItemUseHandler> implemen
 
     public int getCapacity() {
         return CAPACITY;
-    }
-
-    public int[] getInputSlots() {
-        return inputSlots;
     }
 
     public int[] getOutputSlots() {

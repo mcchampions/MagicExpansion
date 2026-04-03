@@ -174,9 +174,7 @@ public class CargoFragmentExtract extends SimpleSlimefunItem<ItemUseHandler> imp
 
                 String input = event.getMessage().trim();
 
-                Bukkit.getScheduler().runTask(MagicExpansion.getInstance(), () -> {
-                    processExtractInput(player, operation, input);
-                });
+                Bukkit.getScheduler().runTask(MagicExpansion.getInstance(), () -> processExtractInput(player, operation, input));
             }
 
             @EventHandler
@@ -195,7 +193,7 @@ public class CargoFragmentExtract extends SimpleSlimefunItem<ItemUseHandler> imp
     private void processExtractInput(Player player, ExtractOperation operation, String input) {
         try {
             // 处理取消
-            if (input.equalsIgnoreCase("cancel")) {
+            if ("cancel".equalsIgnoreCase(input)) {
                 player.sendMessage(ChatColor.YELLOW + "已取消提取操作。");
                 pendingExtracts.remove(player.getUniqueId());
                 cleanupListenerIfNeeded();
