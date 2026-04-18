@@ -31,6 +31,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.inventory.BlockInventoryHolder;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
@@ -596,10 +598,15 @@ public class DrawMachine extends SlimefunItem implements EnergyNetComponent {
     }
 
     private void handleTemplateSlotClick(Player player, int slot, ItemStack item, ClickAction action) {
-        Block targetBlock = player.getTargetBlockExact(5);
-        if (targetBlock == null) return;
-
-        BlockMenu menu = StorageCacheUtils.getMenu(targetBlock.getLocation());
+//        Block targetBlock = player.getTargetBlockExact(5);
+//        if (targetBlock == null) return;
+        Inventory inv = player.getOpenInventory().getTopInventory();
+        if (!(inv.getHolder() instanceof BlockMenu menu)){
+            return;
+        }
+//        Block targetBlock = inv.getLocation().getBlock();
+//        BlockMenu menu = StorageCacheUtils.getMenu(targetBlock.getLocation());
+        Block targetBlock = menu.getLocation().getBlock();
         if (menu == null) return;
 
         int storedAmount = getStoredTemplateAmount(targetBlock.getLocation());
@@ -782,10 +789,15 @@ public class DrawMachine extends SlimefunItem implements EnergyNetComponent {
     }
 
     private void handleSettingsSlotClick(Player player, int slot, ItemStack item, ClickAction action) {
-        Block targetBlock = player.getTargetBlockExact(5);
-        if (targetBlock == null) return;
+//        Block targetBlock = player.getTargetBlockExact(5);
+//        if (targetBlock == null) return;
+        Inventory inv = player.getOpenInventory().getTopInventory();
+        if (!(inv.getHolder() instanceof BlockMenu menu)){
+            return;
+        }
+//        Block targetBlock = inv.getLocation().getBlock();
 
-        BlockMenu menu = StorageCacheUtils.getMenu(targetBlock.getLocation());
+//        BlockMenu menu = StorageCacheUtils.getMenu(targetBlock.getLocation());
         if (menu == null) return;
 
         // 左键点击 - 设置数量
