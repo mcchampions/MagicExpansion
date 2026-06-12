@@ -138,8 +138,6 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
         if (dirCount > 0) {
             Player nearest = getNearestPlayer(block);
             if (nearest != null) {
-                StringBuilder dirs = new StringBuilder();
-
                 for (int i = 0; i < 6; i++) {
                     if (!enabled[i]) continue;
 
@@ -149,20 +147,26 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
                         new ItemStack(Material.AIR), loc.getBlock(), BlockFace.SELF
                     );
                     Bukkit.getPluginManager().callEvent(event);
-                    dirs.append(DIR_NAMES[i]).append(' ');
                 }
+            }
+        }
 
-                // Phase 3: update status display
-                if (menu.hasViewer()) {
-                    menu.replaceExistingItem(16, new CustomItemStack(Material.PINK_CANDLE, "§b交互机器人",
-                        "§b工作类型：§e右键交互方块",
-                        "§b交互速度：§e1次/粘液刻",
-                        "§b模拟玩家：§e" + nearest.getName(),
-                        "§b模拟方向：§e" + dirs.toString().trim(),
-                        "§b耗电速度：§e这个机器人不花电的",
-                        "§b电量存储：§e这个机器人不储存电"));
+        // Phase 3: always update status display when someone is viewing
+        if (menu.hasViewer()) {
+            Player nearest = getNearestPlayer(block);
+            if (nearest != null) {
+                StringBuilder dirs = new StringBuilder();
+                for (int i = 0; i < 6; i++) {
+                    if (enabled[i]) dirs.append(DIR_NAMES[i]).append(' ');
                 }
-            } else if (menu.hasViewer()) {
+                menu.replaceExistingItem(16, new CustomItemStack(Material.PINK_CANDLE, "§b交互机器人",
+                    "§b工作类型：§e右键交互方块",
+                    "§b交互速度：§e1次/粘液刻",
+                    "§b模拟玩家：§e" + nearest.getName(),
+                    "§b模拟方向：§e" + dirs.toString().trim(),
+                    "§b耗电速度：§e这个机器人不花电的",
+                    "§b电量存储：§e这个机器人不储存电"));
+            } else {
                 menu.replaceExistingItem(16, new CustomItemStack(Material.PINK_CANDLE, "§b交互机器人",
                     "§b工作类型：§e右键交互方块",
                     "§b交互速度：§e1次/粘液刻",
@@ -318,7 +322,6 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
         for (int slot : controlSlots) {
             preset.addItem(slot, new CustomItemStack(BUTTON_OFF, "§7未激活", "§e点击激活"),
                     (player, slot1, item, action) -> {
-                        Block b = player.getTargetBlock(null, 5);
                         if (!(player.getOpenInventory().getTopInventory().getHolder() instanceof BlockMenu menu)) {
                             return false;
                         }
