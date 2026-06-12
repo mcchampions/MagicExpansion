@@ -164,7 +164,7 @@ public class MagicAltarManager {
             int[] pos = positions[i];
             Location loc = centerDispenserLoc.clone().add(pos[0], 0, pos[1]);
 
-            if (loc.getBlock().getState() instanceof Dispenser dispenser) {
+            if (loc.getBlock().getState(false) instanceof Dispenser dispenser) {
 
                 for (int slot = 0; slot < 9; slot++) {
                     ItemStack item = dispenser.getInventory().getItem(slot);

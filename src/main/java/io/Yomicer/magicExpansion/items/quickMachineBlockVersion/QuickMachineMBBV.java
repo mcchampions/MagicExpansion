@@ -175,7 +175,7 @@ public class QuickMachineMBBV extends SlimefunItem implements EnergyNetComponent
                 public boolean onClick(InventoryClickEvent e, Player p, int slot, ItemStack cursor, ClickAction action) {
 
                         if (e.getAction() != InventoryAction.NOTHING){
-                        Block block = ((BlockMenu) e.getInventory().getHolder()).getBlock();
+                        Block block = ((BlockMenu) e.getInventory().getHolder(false)).getBlock();
                         if (block != null) {
                             Bukkit.getScheduler().runTaskLater(MagicExpansion.getInstance(), () -> {
                                 BlockMenu menu = StorageCacheUtils.getMenu(block.getLocation());
