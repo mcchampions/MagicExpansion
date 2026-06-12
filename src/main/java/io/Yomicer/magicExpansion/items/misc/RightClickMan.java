@@ -118,9 +118,13 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
             enabled[i] = isEnabled;
             if (isEnabled) dirCount++;
 
-            // Compute cache key: material ordinal encodes block type, +1 if enabled
-            // If key matches last tick, display item is already correct — skip rebuild
-            int key = targetBlock.getType().ordinal() * 2 + (isEnabled ? 1 : 0);
+            // Compute display cache key.
+            // Slimefun items share the same Material (e.g. PLAYER_HEAD), so we must
+            // key by item ID to distinguish them. Plain blocks use material ordinal.
+            SlimefunItem sfItem = StorageCacheUtils.getSfItem(targetBlock.getLocation());
+            int key = (sfItem != null)
+                ? sfItem.getId().hashCode() * 2 + (isEnabled ? 1 : 0)
+                : targetBlock.getType().ordinal() * 2 + (isEnabled ? 1 : 0);
             newKeys[i] = key;
 
             if (cachedKeys != null && cachedKeys[i] == key) {
@@ -128,7 +132,7 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
             }
 
             String statusText = isEnabled ? "§a已启用" : "§7未启用";
-            ItemStack displayItem = buildDisplayItem(targetBlock, statusText);
+            ItemStack displayItem = buildDisplayItem(targetBlock, statusText, sfItem);
             menu.replaceExistingItem(displaySlot, displayItem);
         }
 
@@ -157,13 +161,16 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
             if (nearest != null) {
                 StringBuilder dirs = new StringBuilder();
                 for (int i = 0; i < 6; i++) {
-                    if (enabled[i]) dirs.append(DIR_NAMES[i]).append(' ');
+                    if (enabled[i]) {
+                        if (dirs.length() > 0) dirs.append(' ');
+                        dirs.append(DIR_NAMES[i]);
+                    }
                 }
                 menu.replaceExistingItem(16, new CustomItemStack(Material.PINK_CANDLE, "§b交互机器人",
                     "§b工作类型：§e右键交互方块",
                     "§b交互速度：§e1次/粘液刻",
                     "§b模拟玩家：§e" + nearest.getName(),
-                    "§b模拟方向：§e" + dirs.toString().trim(),
+                    "§b模拟方向：§e" + dirs.toString(),
                     "§b耗电速度：§e这个机器人不花电的",
                     "§b电量存储：§e这个机器人不储存电"));
             } else {
@@ -181,12 +188,11 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
      * Build the display ItemStack for a target block.
      * Slimefun items are cloned; plain blocks use a new ItemStack.
      * BlockState is only fetched when the item actually supports BlockStateMeta.
+     *
+     * @param sfItem pre-fetched SlimefunItem (from cache-key lookup), or null
      */
-    private ItemStack buildDisplayItem(Block targetBlock, String statusText) {
-        Location targetLoc = targetBlock.getLocation();
-
+    private ItemStack buildDisplayItem(Block targetBlock, String statusText, SlimefunItem sfItem) {
         // Slimefun item: clone to avoid mutating the original template
-        SlimefunItem sfItem = StorageCacheUtils.getSfItem(targetLoc);
         if (sfItem != null) {
             ItemStack item = sfItem.getItem().clone();
             applyDisplayInfo(item, targetBlock, statusText);
@@ -234,13 +240,14 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
      */
     private Player getNearestPlayer(Block block) {
         Location loc = block.getLocation();
-        Integer cachedTick = playerCacheTick.get(loc);
+        Integer lastTick = playerCacheTick.get(loc);
 
-        if (cachedTick != null && (tickCounter - cachedTick) < PLAYER_CACHE_TTL) {
+        if (lastTick != null && (tickCounter - lastTick) < PLAYER_CACHE_TTL) {
             Player cached = playerCache.get(loc);
-            if (cached != null && cached.isOnline()) {
-                return cached;
-            }
+            // null means we already scanned and found nobody nearby
+            if (cached == null) return null;
+            if (cached.isOnline()) return cached;
+            // player went offline — fall through to re-scan
         }
 
         World world = loc.getWorld();
