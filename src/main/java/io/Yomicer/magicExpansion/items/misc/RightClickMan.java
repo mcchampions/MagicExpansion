@@ -58,6 +58,27 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
 
     private final int[] inputSlots = {};
 
+    // Static direction mappings — avoids per-tick HashMap allocation
+    private static final int[] DIR_LOGIC_SLOTS  = {9, 10, 11, 12, 13, 14};
+    private static final int[] DIR_DISPLAY_SLOTS = {0, 1, 2, 3, 4, 5};
+    private static final BlockFace[] DIR_FACES = {
+        BlockFace.UP, BlockFace.DOWN, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.NORTH
+    };
+    private static final int[] DIR_OFF_X = {0, 0, 1, 0, -1, 0};
+    private static final int[] DIR_OFF_Y = {1, -1, 0, 0, 0, 0};
+    private static final int[] DIR_OFF_Z = {0, 0, 0, 1, 0, -1};
+    private static final String[] DIR_NAMES = {"上", "下", "东", "南", "西", "北"};
+
+    // Player cache — avoids sorting all nearby players every tick
+    private final Map<Location, Player> playerCache = new HashMap<>();
+    private final Map<Location, Integer> playerCacheTick = new HashMap<>();
+    private int tickCounter;
+    private static final int PLAYER_CACHE_TTL = 20;
+
+    // Display cache — avoids rebuilding ItemStack when target block + button state unchanged.
+    // Key: block location -> int[6] where each int = material.ordinal() * 2 + (enabled ? 1 : 0)
+    private final Map<Location, int[]> lastDisplayKey = new HashMap<>();
+
     @Override
     public void preRegister() {
         addItemHandler(new BlockTicker() {
@@ -73,207 +94,167 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
             }
         });
     }
+
     protected void tick(Block block) {
         BlockMenu menu = StorageCacheUtils.getMenu(block.getLocation());
-        if(menu != null) {
-            // 定义：逻辑槽位 → 显示槽位 → 方向
-            Map<Integer, Map.Entry<Integer, BlockFace>> directionMap = new HashMap<>();
-            directionMap.put(9,  new AbstractMap.SimpleImmutableEntry<>(0, BlockFace.UP));     // 9 → 0 → UP
-            directionMap.put(10, new AbstractMap.SimpleImmutableEntry<>(1, BlockFace.DOWN));   // 10→ 1 → DOWN
-            directionMap.put(11, new AbstractMap.SimpleImmutableEntry<>(2, BlockFace.EAST));   // 11→ 2 → EAST
-            directionMap.put(12, new AbstractMap.SimpleImmutableEntry<>(3, BlockFace.SOUTH));  // 12→ 3 → SOUTH
-            directionMap.put(13, new AbstractMap.SimpleImmutableEntry<>(4, BlockFace.WEST));   // 13→ 4 → WEST
-            directionMap.put(14, new AbstractMap.SimpleImmutableEntry<>(5, BlockFace.NORTH));  // 14→ 5 → NORTH
+        if (menu == null) return;
 
-            // 遍历每个方向
-            for (Map.Entry<Integer, Map.Entry<Integer, BlockFace>> entry : directionMap.entrySet()) {
-                int logicSlot = entry.getKey();           // 控制逻辑的槽位 (9~14)
-                int displaySlot = entry.getValue().getKey(); // 显示用的槽位 (0~5)
-                BlockFace face = entry.getValue().getValue(); // 对应方向
+        tickCounter++;
 
-                Block targetBlock = block.getRelative(face);
-                Location targetLocation = targetBlock.getLocation();
+        // Phase 1: build display items & collect which directions are enabled
+        boolean[] enabled = new boolean[6];
+        int dirCount = 0;
 
-                boolean isEnabled = isButtonOn(menu, logicSlot);
-                String statusText = isEnabled ? "§a已启用" : "§7未启用";
+        Location blockLoc = block.getLocation();
+        int[] cachedKeys = lastDisplayKey.get(blockLoc);
+        int[] newKeys = new int[6];
 
-                ItemStack displayItem;
+        for (int i = 0; i < 6; i++) {
+            int logicSlot = DIR_LOGIC_SLOTS[i];
+            int displaySlot = DIR_DISPLAY_SLOTS[i];
 
-                SlimefunItem sfItem = StorageCacheUtils.getSfItem(targetLocation);
-                if (sfItem != null) {
-                    displayItem = sfItem.getItem().clone();
-                }
-                else if (targetBlock.getType() != Material.AIR) {
-                    // 检查材料是否可以作为物品
-                    Material blockType = targetBlock.getType();
-                    if (isValidItemMaterial(blockType)) {
-                        displayItem = new ItemStack(blockType);
+            Block targetBlock = block.getRelative(DIR_FACES[i]);
+            boolean isEnabled = isButtonOn(menu, logicSlot);
+            enabled[i] = isEnabled;
+            if (isEnabled) dirCount++;
 
-                        BlockState state = targetBlock.getState();
-                        ItemMeta meta = displayItem.getItemMeta();
-                        if (meta instanceof BlockStateMeta blockStateMeta) {
-                            blockStateMeta.setBlockState(state);
-                            blockStateMeta.setLore(null);
-                            displayItem.setItemMeta(blockStateMeta);
-                        }
-                    } else {
-                        // 对于不能作为物品的方块，使用屏障并显示方块信息
-                        displayItem = createBlockDisplayItem(blockType, targetBlock, statusText);
-                    }
-                }
-                else {
-                    displayItem = new ItemStack(Material.BARRIER);
-                    ItemMeta meta = displayItem.getItemMeta();
-                    if (meta != null) {
-                        meta.setDisplayName("§7空气");
-                        meta.setLore(Arrays.asList(
-                                "§7坐标: " + targetBlock.getX() + "," + targetBlock.getY() + "," + targetBlock.getZ(),
-                                "§7状态: " + statusText,
-                                "§8（此处为空气）"
-                        ));
-                        displayItem.setItemMeta(meta);
-                    }
-                    menu.replaceExistingItem(displaySlot, displayItem);
-                    continue;
+            // Compute cache key: material ordinal encodes block type, +1 if enabled
+            // If key matches last tick, display item is already correct — skip rebuild
+            int key = targetBlock.getType().ordinal() * 2 + (isEnabled ? 1 : 0);
+            newKeys[i] = key;
+
+            if (cachedKeys != null && cachedKeys[i] == key) {
+                continue; // unchanged, skip expensive ItemStack rebuild
+            }
+
+            String statusText = isEnabled ? "§a已启用" : "§7未启用";
+            ItemStack displayItem = buildDisplayItem(targetBlock, statusText);
+            menu.replaceExistingItem(displaySlot, displayItem);
+        }
+
+        lastDisplayKey.put(blockLoc, newKeys);
+
+        // Phase 2: fire PlayerInteractEvent for each enabled direction
+        if (dirCount > 0) {
+            Player nearest = getNearestPlayer(block);
+            if (nearest != null) {
+                StringBuilder dirs = new StringBuilder();
+
+                for (int i = 0; i < 6; i++) {
+                    if (!enabled[i]) continue;
+
+                    Location loc = blockLoc.clone().add(DIR_OFF_X[i], DIR_OFF_Y[i], DIR_OFF_Z[i]);
+                    PlayerInteractEvent event = new PlayerInteractEvent(
+                        nearest, Action.RIGHT_CLICK_BLOCK,
+                        new ItemStack(Material.AIR), loc.getBlock(), BlockFace.SELF
+                    );
+                    Bukkit.getPluginManager().callEvent(event);
+                    dirs.append(DIR_NAMES[i]).append(' ');
                 }
 
-                // ====== 4. 对非 AIR 的正常方块，统一设置显示信息 ======
-                setBlockDisplayWithInfo(displayItem, targetBlock, statusText);
-
-                // 更新 GUI
-                menu.replaceExistingItem(displaySlot, displayItem);
-            }
-
-            // 定义槽位与方向的映射（槽位 → 是否启用）
-            boolean up = isButtonOn(menu, 9);
-            boolean down = isButtonOn(menu, 10);
-            boolean east = isButtonOn(menu, 11);
-            boolean south = isButtonOn(menu, 12);
-            boolean west = isButtonOn(menu, 13);
-            boolean north = isButtonOn(menu, 14);
-
-            World world = block.getLocation().getWorld();
-            List<Player> nearbyPlayers = world.getPlayers().stream()
-                    .filter(player -> player.getLocation().distanceSquared(block.getLocation()) <= 2500)
-                    .sorted(Comparator.comparingDouble(a -> a.getLocation().distance(block.getLocation())))
-                    .toList();
-
-            if (nearbyPlayers.isEmpty()) return;
-            Player nearestPlayer = nearbyPlayers.get(0);
-
-            String directions = "";
-
-            if (up) {
-                Location loc1 = block.getLocation().clone().add(0, 1, 0);
-                Block targetBlock1 = loc1.getBlock();
-                PlayerInteractEvent interactEvent = new PlayerInteractEvent(
-                        nearestPlayer,
-                        Action.RIGHT_CLICK_BLOCK,
-                        new ItemStack(Material.AIR),
-                        targetBlock1,
-                        BlockFace.SELF
-                );
-                Bukkit.getPluginManager().callEvent(interactEvent);
-                directions += "上 ";
-            }
-
-            if (down) {
-                Location loc2 = block.getLocation().clone().add(0, -1, 0);
-                Block targetBlock2 = loc2.getBlock();
-                PlayerInteractEvent interactEvent = new PlayerInteractEvent(
-                        nearestPlayer,
-                        Action.RIGHT_CLICK_BLOCK,
-                        new ItemStack(Material.AIR),
-                        targetBlock2,
-                        BlockFace.SELF
-                );
-                Bukkit.getPluginManager().callEvent(interactEvent);
-                directions += "下 ";
-            }
-
-            if (east) {
-                Location loc3 = block.getLocation().clone().add(1, 0, 0);
-                Block targetBlock3 = loc3.getBlock();
-                PlayerInteractEvent interactEvent = new PlayerInteractEvent(
-                        nearestPlayer,
-                        Action.RIGHT_CLICK_BLOCK,
-                        new ItemStack(Material.AIR),
-                        targetBlock3,
-                        BlockFace.SELF
-                );
-                Bukkit.getPluginManager().callEvent(interactEvent);
-                directions += "东 ";
-            }
-
-            if (south) {
-                Location loc4 = block.getLocation().clone().add(0, 0, 1);
-                Block targetBlock4 = loc4.getBlock();
-                PlayerInteractEvent interactEvent = new PlayerInteractEvent(
-                        nearestPlayer,
-                        Action.RIGHT_CLICK_BLOCK,
-                        new ItemStack(Material.AIR),
-                        targetBlock4,
-                        BlockFace.SELF
-                );
-                Bukkit.getPluginManager().callEvent(interactEvent);
-                directions += "南 ";
-            }
-
-            if (west) {
-                Location loc5 = block.getLocation().clone().add(-1, 0, 0);
-                Block targetBlock5 = loc5.getBlock();
-                PlayerInteractEvent interactEvent = new PlayerInteractEvent(
-                        nearestPlayer,
-                        Action.RIGHT_CLICK_BLOCK,
-                        new ItemStack(Material.AIR),
-                        targetBlock5,
-                        BlockFace.SELF
-                );
-                Bukkit.getPluginManager().callEvent(interactEvent);
-                directions += "西 ";
-            }
-
-            if (north) {
-                Location loc6 = block.getLocation().clone().add(0, 0, -1);
-                Block targetBlock6 = loc6.getBlock();
-                PlayerInteractEvent interactEvent = new PlayerInteractEvent(
-                        nearestPlayer,
-                        Action.RIGHT_CLICK_BLOCK,
-                        new ItemStack(Material.AIR),
-                        targetBlock6,
-                        BlockFace.SELF
-                );
-                Bukkit.getPluginManager().callEvent(interactEvent);
-                directions += "北";
-            }
-
-            // 更新状态显示
-            if (menu.hasViewer()) {
-                if (nearestPlayer != null) {
+                // Phase 3: update status display
+                if (menu.hasViewer()) {
                     menu.replaceExistingItem(16, new CustomItemStack(Material.PINK_CANDLE, "§b交互机器人",
-                            "§b工作类型：§e右键交互方块",
-                            "§b交互速度：§e1次/粘液刻",
-                            "§b模拟玩家：§e" + nearestPlayer.getName(),
-                            "§b模拟方向：§e" + directions.trim(),
-                            "§b耗电速度：§e这个机器人不花电的",
-                            "§b电量存储：§e这个机器人不储存电"));
-                } else {
-                    menu.replaceExistingItem(16, new CustomItemStack(Material.PINK_CANDLE, "§b交互机器人",
-                            "§b工作类型：§e右键交互方块",
-                            "§b交互速度：§e1次/粘液刻",
-                            "§c未检测到玩家在附近",
-                            "§b耗电速度：§e这个机器人不花电的",
-                            "§b电量存储：§e这个机器人不储存电"));
+                        "§b工作类型：§e右键交互方块",
+                        "§b交互速度：§e1次/粘液刻",
+                        "§b模拟玩家：§e" + nearest.getName(),
+                        "§b模拟方向：§e" + dirs.toString().trim(),
+                        "§b耗电速度：§e这个机器人不花电的",
+                        "§b电量存储：§e这个机器人不储存电"));
                 }
+            } else if (menu.hasViewer()) {
+                menu.replaceExistingItem(16, new CustomItemStack(Material.PINK_CANDLE, "§b交互机器人",
+                    "§b工作类型：§e右键交互方块",
+                    "§b交互速度：§e1次/粘液刻",
+                    "§c未检测到玩家在附近",
+                    "§b耗电速度：§e这个机器人不花电的",
+                    "§b电量存储：§e这个机器人不储存电"));
             }
         }
+    }
+
+    /**
+     * Build the display ItemStack for a target block.
+     * Slimefun items are cloned; plain blocks use a new ItemStack.
+     * BlockState is only fetched when the item actually supports BlockStateMeta.
+     */
+    private ItemStack buildDisplayItem(Block targetBlock, String statusText) {
+        Location targetLoc = targetBlock.getLocation();
+
+        // Slimefun item: clone to avoid mutating the original template
+        SlimefunItem sfItem = StorageCacheUtils.getSfItem(targetLoc);
+        if (sfItem != null) {
+            ItemStack item = sfItem.getItem().clone();
+            applyDisplayInfo(item, targetBlock, statusText);
+            return item;
+        }
+
+        // Air
+        if (targetBlock.getType() == Material.AIR) {
+            ItemStack item = new ItemStack(Material.BARRIER);
+            ItemMeta meta = item.getItemMeta();
+            if (meta != null) {
+                meta.setDisplayName("§7空气");
+                meta.setLore(List.of(
+                    "§7坐标: " + targetBlock.getX() + "," + targetBlock.getY() + "," + targetBlock.getZ(),
+                    "§7状态: " + statusText,
+                    "§8（此处为空气）"
+                ));
+                item.setItemMeta(meta);
+            }
+            return item;
+        }
+
+        // Plain block
+        Material blockType = targetBlock.getType();
+        if (!isValidItemMaterial(blockType)) {
+            return createBlockDisplayItem(blockType, targetBlock, statusText);
+        }
+
+        ItemStack item = new ItemStack(blockType);
+        applyDisplayInfo(item, targetBlock, statusText);
+
+        // Only call getState() when the item actually carries BlockStateMeta.
+        // This avoids the expensive Block.getState() for simple blocks (stone, dirt, etc.)
+        ItemMeta meta = item.getItemMeta();
+        if (meta instanceof BlockStateMeta bsm) {
+            bsm.setBlockState(targetBlock.getState());
+            item.setItemMeta(bsm);
+        }
+
+        return item;
+    }
+
+    /**
+     * Cached nearest-player lookup — re-scans only every PLAYER_CACHE_TTL ticks per block.
+     */
+    private Player getNearestPlayer(Block block) {
+        Location loc = block.getLocation();
+        Integer cachedTick = playerCacheTick.get(loc);
+
+        if (cachedTick != null && (tickCounter - cachedTick) < PLAYER_CACHE_TTL) {
+            Player cached = playerCache.get(loc);
+            if (cached != null && cached.isOnline()) {
+                return cached;
+            }
+        }
+
+        World world = loc.getWorld();
+        List<Player> nearby = world.getPlayers().stream()
+            .filter(p -> p.getLocation().distanceSquared(loc) <= 2500)
+            .sorted(Comparator.comparingDouble(a -> a.getLocation().distance(loc)))
+            .toList();
+
+        Player nearest = nearby.isEmpty() ? null : nearby.get(0);
+        playerCache.put(loc, nearest);
+        playerCacheTick.put(loc, tickCounter);
+        return nearest;
     }
 
     /**
      * 检查材料是否可以作为有效的物品
      */
     private boolean isValidItemMaterial(Material material) {
-        // 墙上的标志牌、双台阶等不能作为物品
         return material.isItem() && !material.name().contains("WALL_") && !material.name().contains("DOUBLE_");
     }
 
@@ -285,7 +266,6 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
         ItemMeta meta = displayItem.getItemMeta();
 
         if (meta != null) {
-            // 获取方块的友好名称
             String blockName = blockType.name().toLowerCase().replace("_", " ");
             meta.setDisplayName("§7" + blockName);
 
@@ -399,39 +379,43 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
         preset.addItem(16, new CustomItemStack(Material.RED_CANDLE, " "),
                 (p, slot, item, action) -> false);
     }
+
     private boolean isButtonOn(BlockMenu menu, int slot) {
         ItemStack item = menu.getItemInSlot(slot);
-        return item != null && item.getType() == Material.LANTERN; // 注意：这里我们直接用 LANTERN 判断
+        return item != null && item.getType() == Material.LANTERN;
     }
 
     /**
-     * 设置物品显示：继承原显示名和Lore，并追加坐标和状态信息
+     * Applies display name + coordinate/status lore to the item.
+     * Preserves existing lore and appends our info below a separator.
+     *
+     * Performance notes:
+     * - getItemMeta() is called exactly once (NBT deserialize).
+     * - ItemStackHelper.getDisplayName() is only invoked for plain blocks
+     *   that lack a custom name; Slimefun items reuse their existing
+     *   display name via meta.getDisplayName(), avoiding a second
+     *   NBT deserialize inside the helper.
      */
-    private void setBlockDisplayWithInfo(ItemStack item, Block block, String statusLine) {
+    private void applyDisplayInfo(ItemStack item, Block block, String statusLine) {
         if (item == null) return;
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
-        // 1. 设置显示名（使用 ItemStackHelper 获取友好名称）
-        String displayName = ItemStackHelper.getDisplayName(item);
-        meta.setDisplayName(displayName);
+        // Slimefun items already have a custom display name — reuse it directly.
+        // Plain blocks (new ItemStack) have no display name — fetch the translated name.
+        if (!meta.hasDisplayName()) {
+            meta.setDisplayName(ItemStackHelper.getDisplayName(item));
+        }
 
-        List<String> lore = new ArrayList<>();
-
-        // 2. 保留原有 Lore（如果有）
+        // Build lore: preserve original, then append coordinates + status
+        List<String> lore;
         if (meta.hasLore()) {
-            lore.addAll(meta.getLore());
+            lore = new ArrayList<>(meta.getLore());
+        } else {
+            lore = new ArrayList<>(4); // pre-size for: separator, coords, status, (optional)
         }
-
-        // 3. 添加分隔线（如果已有 Lore 或要添加新信息）
-        if (!lore.isEmpty() || statusLine != null) {
-            lore.add("§8---");
-        }
-
-        // 4. 追加坐标
+        lore.add("§8---");
         lore.add("§7坐标: " + block.getX() + "," + block.getY() + "," + block.getZ());
-
-        // 5. 追加状态（可选）
         if (statusLine != null) {
             lore.add("§7状态: " + statusLine);
         }
@@ -447,12 +431,17 @@ public class RightClickMan extends SlimefunItem implements EnergyNetComponent {
             @Override
             public void onPlayerBreak(@Nonnull BlockBreakEvent e, @Nonnull ItemStack i, @Nonnull List<ItemStack> list) {
                 Block b = e.getBlock();
-                BlockMenu inv = StorageCacheUtils.getMenu(b.getLocation());
+                Location loc = b.getLocation();
+                BlockMenu inv = StorageCacheUtils.getMenu(loc);
 
                 if (inv != null) {
-                    inv.dropItems(b.getLocation(), inputSlots);
+                    inv.dropItems(loc, inputSlots);
                 }
 
+                // Clean up caches so stale entries don't leak
+                playerCache.remove(loc);
+                playerCacheTick.remove(loc);
+                lastDisplayKey.remove(loc);
             }
         };
     }
